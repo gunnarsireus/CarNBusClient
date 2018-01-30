@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using CarNBusClient.DAL;
 using Microsoft.AspNetCore.Builder;
@@ -11,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using CarNBusClient.Models;
-using CarNBusClient.Models.HomeViewModel;
 using CarNBusClient.Services;
 
 namespace CarNBusClient
@@ -40,8 +37,6 @@ namespace CarNBusClient
 			var task = ConfigureServicesAsync(services);
 
 			task.Wait();
-
-
 		}
 		public async Task ConfigureServicesAsync(IServiceCollection services)
 		{
