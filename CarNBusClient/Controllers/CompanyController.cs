@@ -21,7 +21,7 @@ namespace CarNBusClient.Controllers
 
 		// GET: Company
 
-		public async Task<IActionResult> Index()
+		public async Task<IActionResult> Index(string id)
 		{
 			if (!_signInManager.IsSignedIn(User)) return RedirectToAction("Index", "Home");
 			var companies = await Utils.Get<List<Company>>("api/Company");
@@ -63,7 +63,7 @@ namespace CarNBusClient.Controllers
 			company.Id = Guid.NewGuid();
 			await Utils.Post<Company>("api/Company/", company);
 
-			return RedirectToAction(nameof(Index));
+			return RedirectToAction("Index", new { id = "pending create," + company.Id });
 		}
 
 		// GET: Company/Edit/5
@@ -87,7 +87,7 @@ namespace CarNBusClient.Controllers
 			oldCompany.Address = company.Address;
 			await Utils.Put<Company>("api/Company/" + oldCompany.Id, oldCompany);
 
-			return RedirectToAction(nameof(Index));
+			return RedirectToAction("Index", new { id = "pending update," + id });
 		}
 
 		// GET: Company/Delete/5
@@ -104,7 +104,7 @@ namespace CarNBusClient.Controllers
 		public async Task<IActionResult> DeleteConfirmed(Guid id)
 		{
 			await Utils.Delete<Company>("api/Company/" + id);
-			return RedirectToAction(nameof(Index));
+			return RedirectToAction("Index", new { id = "pending delete," + id });
 		}
 
 		private async Task<bool> CompanyExists(Guid id)

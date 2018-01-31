@@ -11,6 +11,10 @@ namespace CarNBusClient.Models
 		{
 			CreationTime = DateTime.Now.ToString(new CultureInfo("en-US"));
 		}
+		public Company(Guid id) : this()
+		{
+			Id = id;
+		}
 		public Guid Id { get; set; }
 
 		[Display(Name = "Created date")]

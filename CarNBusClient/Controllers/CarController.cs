@@ -24,7 +24,25 @@ namespace CarNBusClient.Controllers
 		{
 			if (!_signInManager.IsSignedIn(User)) return RedirectToAction("Index", "Home");
 			var companies = await Utils.Get<List<Company>>("api/Company");
-
+			string pending = "";
+			Guid pendingId = Guid.Empty;
+			if (id != null && id.IndexOf("pending", StringComparison.Ordinal) != -1)
+			{
+				string[] tokens = id.Split(',');
+				switch (tokens.Length)
+				{
+					case 2:
+						pending = tokens[0].Remove(0,8);
+						pendingId = Guid.Parse(tokens[1]);
+						id = null;
+						break;
+					case 3:
+						pending = tokens[1].Remove(0, 8);
+						pendingId = Guid.Parse(tokens[2]);
+						id = tokens[0];
+						break;
+				}
+			}
 			if (companies.Any() && id == null)
 				id = companies[0].Id.ToString();
 			var selectList = new List<SelectListItem>
@@ -55,6 +73,42 @@ namespace CarNBusClient.Controllers
 				CompanySelectList = selectList,
 				Cars = cars
 			};
+			if (pending != "")
+			{
+				switch (pending)
+				{
+					case "create":
+						if (carListViewModel.Cars.All(c => c.Id != pendingId))
+						{
+							carListViewModel.Cars.Add(new Car(Guid.Parse(id))
+							{
+								Pending = "Create"
+							});
+						}
+
+						break;
+					case "update":
+						foreach (var car in carListViewModel.Cars)
+						{
+							if (car.Id == pendingId)
+							{
+								car.Pending = "Update";
+								break;
+							}
+						}
+						break;
+					case "delete":
+						foreach (var car in carListViewModel.Cars)
+						{
+							if (car.Id == pendingId)
+							{
+								car.Pending = "Delete";
+								break;
+							}
+						}
+						break;
+				}
+			}
 
 			ViewBag.CompanyId = id;
 			return View(carListViewModel);
@@ -94,7 +148,7 @@ namespace CarNBusClient.Controllers
 			car.Id = Guid.NewGuid();
 			await Utils.Post<Car>("api/Car/", car);
 
-			return RedirectToAction("Index", new { id = car.CompanyId });
+			return RedirectToAction("Index", new { id = car.CompanyId + ",pending create," + car.Id });
 		}
 
 		// GET: Car/Edit/5
@@ -121,7 +175,7 @@ namespace CarNBusClient.Controllers
 			oldCar.Disabled = false; //Enable updates of Online/Offline when editing done
 			await Utils.Put<Car>("api/Car/" + oldCar.Id, oldCar);
 
-			return RedirectToAction("Index", new { id = oldCar.CompanyId });
+			return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending update," + id });
 		}
 
 		// GET: Car/Delete/5
@@ -139,7 +193,7 @@ namespace CarNBusClient.Controllers
 		{
 			var car = await Utils.Get<Car>("api/Car/" + id);
 			await Utils.Delete<Car>("api/Car/" + id);
-			return RedirectToAction("Index", new { id = car.CompanyId });
+			return RedirectToAction("Index", new { id = car.CompanyId + ",pending delete," + id });
 		}
 
 		public async Task<bool> RegNrAvailable(string regNr)

@@ -12,6 +12,10 @@ namespace CarNBusClient.Models
 			CreationTime = DateTime.Now.ToString(new CultureInfo("en-US"));
 			Online = true;
 		}
+		public Car(Guid companyId) : this()
+		{
+			CompanyId = companyId;
+		}
 		public Guid Id { get; set; }
 		public Guid CompanyId { get; set; }
 
