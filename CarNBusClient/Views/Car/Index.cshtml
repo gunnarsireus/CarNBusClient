@@ -48,6 +48,9 @@
                     <th>
                         @Html.DisplayNameFor(model => model.Cars[0].Online)
                     </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Cars[0].Pending)
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -68,6 +71,9 @@
                         @{ var cl = item.Online ? "" : "alert-danger";}
                         <td class="@cl">
                             @Html.DisplayFor(modelItem => item.OnlineOrOffline)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Pending)
                         </td>
                         <td>
                             <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

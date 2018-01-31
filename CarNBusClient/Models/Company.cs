@@ -22,5 +22,6 @@ namespace CarNBusClient.Models
 		public string Address { get; set; }
 
 		public ICollection<Car> Cars { get; set; }
+		public string Pending { get; set; }  //Pending change sin database
 	}
 }

@@ -49,6 +49,9 @@
                                 <th>
                                     @Html.DisplayNameFor(model => cars[j].Online)
                                 </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => cars[j].Pending)
+                                </th>
                             </tr>
 }
                         <tr id="@cars[j].Id">
@@ -61,6 +64,9 @@
                             @{ var cl = cars[j].Online ? "" : "alert-danger";}
                             <td class="@cl">
                                 @Html.DisplayFor(model => cars[j].OnlineOrOffline)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => cars[j].Pending)
                             </td>
                         </tr> if (j == cars.Count - 1)
                                 {

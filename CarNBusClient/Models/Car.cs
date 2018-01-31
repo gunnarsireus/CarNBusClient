@@ -35,5 +35,6 @@ namespace CarNBusClient.Models
 		public string OnlineOrOffline => (this.Online)?"Online":"Offline";
 
 		public bool Disabled { get; set; } //Used to block changes of Online/Offline status
+		public string Pending { get; set; }  //Pending change sin database
 	}
 }
