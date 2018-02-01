@@ -20,7 +20,7 @@ namespace CarNBusClient.Controllers
 			}
 			catch (Exception e)
 			{
-				TempData["CustomError"] = "Ingen kontakt med servern! CarAPI måste startas innan CarNBusClient kan köras!";
+				TempData["CustomError"] = "No contact with server! CarNBusAPI must be started before CarNBusClient could start!";
 				return View(new HomeViewModel { Companies = new List<Company>()});
 			}
 
