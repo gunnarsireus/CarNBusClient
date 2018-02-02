@@ -76,17 +76,26 @@
                             @Html.DisplayFor(modelItem => item.Pending)
                         </td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                            @if (String.IsNullOrEmpty(item.Pending))
+                            {
+                                <a href="/Car/Edit/@item.Id">Edit</a> @Html.Raw("|");
+                                <a href="/Car/Details/@item.Id">Details</a> @Html.Raw("|");
+                                <a href="/Car/Delete/@item.Id">Delete</a>
+                            }
+                            else
+                            {
+                                @Html.Raw("Edit | Details | Delete");
+                            }
                         </td>
-                    </tr>  }
+                    </tr>}
             </tbody>
         </table>
     </div>
     <div class="col-lg-4">
-        <p class="alert-info">All vehicles for a particular company are shown here. In the drop-down menu, you can choose another company and see its vehicles. Note how the status changes randomly every 10 seconds.
-            <br/><br/>
-            If you press F12 and select "Console" you can see when the status changes for each car using Javascript in the browser<br /><br />If you press F12 and select "Console" you can see when the status changes for each car using Javascript in the browser.</p>
+        <p class="alert-info">
+            All vehicles for a particular company are shown here. In the drop-down menu, you can choose another company and see its vehicles. Note how the status changes randomly every 10 seconds.
+            <br /><br />
+            If you press F12 and select "Console" you can see when the status changes for each car using Javascript in the browser<br /><br />If you press F12 and select "Console" you can see when the status changes for each car using Javascript in the browser.
+        </p>
     </div>
 </div>

@@ -9,7 +9,7 @@ namespace CarNBusClient.Models
 	{
 		public Car()
 		{
-			CreationTime = DateTime.Now.ToString(new CultureInfo("en-US"));
+			CreationTime = DateTime.Now.ToString(new CultureInfo("sv-SE"));
 			Online = true;
 		}
 		public Car(Guid companyId) : this()
