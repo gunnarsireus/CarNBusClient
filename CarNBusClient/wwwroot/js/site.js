@@ -13,8 +13,10 @@ function clearErrors() {
     $(".validation-summary-errors").empty();
 };
 
+let longInterval = 10000;
+let numberOfCars = 1;
+
 function timerJob() {
-    const tenSeconds = 10000;
     const oneSecond = 1000;
     $.ajax({
         url: "http://localhost:63484/api/car",
@@ -26,6 +28,7 @@ function timerJob() {
                 console.log("No vehicles found!");
                 return;
             }
+            numberOfCars = cars.length;
             const selectedItem = Math.floor(Math.random() * cars.length);
             let selectedCar = cars[selectedItem];
             if (selectedCar.locked === true) {
@@ -67,7 +70,8 @@ function timerJob() {
             }
         }
     });
-    setTimeout(timerJob, tenSeconds);
+    longInterval = Math.round(10000 / numberOfCars);
+    setTimeout(timerJob, longInterval);
 }
 
 function doFiltering() {

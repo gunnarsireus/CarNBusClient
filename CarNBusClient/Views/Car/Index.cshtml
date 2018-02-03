@@ -76,7 +76,7 @@
                             @Html.DisplayFor(modelItem => item.Pending)
                         </td>
                         <td>
-                            @if (String.IsNullOrEmpty(item.Pending))
+                            @if (String.IsNullOrEmpty(item.Pending) || item.Pending=="Update" || item.Pending=="Create")
                             {
                                 <a href="/Car/Edit/@item.Id">Edit</a> @Html.Raw("|");
                                 <a href="/Car/Details/@item.Id">Details</a> @Html.Raw("|");
