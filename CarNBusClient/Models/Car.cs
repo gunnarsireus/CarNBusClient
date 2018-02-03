@@ -16,7 +16,7 @@ namespace CarNBusClient.Models
 		{
 			CompanyId = companyId;
 		}
-		public Guid Id { get; set; }
+		public Guid CarId { get; set; }
 		public Guid CompanyId { get; set; }
 
 		[Display(Name = "Created date")]

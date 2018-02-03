@@ -56,7 +56,7 @@
             <tbody>
                 @foreach (var item in Model.Cars)
                 {
-                    var iidd = item.Id + "_2";
+                    var iidd = item.CarId + "_2";
 
                     <tr id="@iidd">
                         <td>
@@ -78,9 +78,9 @@
                         <td>
                             @if (String.IsNullOrEmpty(item.Pending) || item.Pending=="Update" || item.Pending=="Create")
                             {
-                                <a href="/Car/Edit/@item.Id">Edit</a> @Html.Raw("|");
-                                <a href="/Car/Details/@item.Id">Details</a> @Html.Raw("|");
-                                <a href="/Car/Delete/@item.Id">Delete</a>
+                                <a href="/Car/Edit/@item.CarId">Edit</a> @Html.Raw("|");
+                                <a href="/Car/Details/@item.CarId">Details</a> @Html.Raw("|");
+                                <a href="/Car/Delete/@item.CarId">Delete</a>
                             }
                             else
                             {

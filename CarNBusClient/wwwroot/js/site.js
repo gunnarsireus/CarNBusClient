@@ -37,16 +37,16 @@ function timerJob() {
             }
             selectedCar.online = !selectedCar.online;
             $.ajax({
-                url: 'http://localhost:63484/api/car/' + selectedCar.id,
+                url: 'http://localhost:63484/api/car/' + selectedCar.carId,
                 contentType: "application/json",
                 type: "PUT",
                 data: JSON.stringify(selectedCar),
                 dataType: "json"
             });
 
-            const selector = `#${selectedCar.id} td:eq(2)`;
-            const selector2 = `#${selectedCar.id + "_2"} td:eq(3)`;
-            const selector3 = `#${selectedCar.id + "_3"}`;
+            const selector = `#${selectedCar.carId} td:eq(2)`;
+            const selector2 = `#${selectedCar.carId + "_2"} td:eq(3)`;
+            const selector3 = `#${selectedCar.carId + "_3"}`;
             if (selectedCar.online === true) {
                 $(selector).text("Online");
                 $(selector).removeClass("alert-danger");

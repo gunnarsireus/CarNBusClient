@@ -28,7 +28,7 @@ namespace CarNBusClient.Controllers
             foreach (var car in allCars)
             {
                 car.Locked = false; //Enable updates of Online/Offline
-                await Utils.Put<Car>("api/Car/" + car.Id, car);
+                await Utils.Put<Car>("api/Car/" + car.CarId, car);
             }
 
             foreach (var company in companies)

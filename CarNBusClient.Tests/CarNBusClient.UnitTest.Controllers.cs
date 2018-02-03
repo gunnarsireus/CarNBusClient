@@ -163,7 +163,7 @@ namespace CarNBusClient.Tests
 			// Assert
 			Assert.IsType<RedirectToActionResult>(result);
 
-			var carId = car.Id;
+			var carId = car.CarId;
 			// Act
 			result = await carController.Details(carId);
 
