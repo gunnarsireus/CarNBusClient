@@ -28,7 +28,7 @@ function timerJob() {
             }
             const selectedItem = Math.floor(Math.random() * cars.length);
             let selectedCar = cars[selectedItem];
-            if (selectedCar.disabled === true) {
+            if (selectedcar.locked === true) {
                 console.log(selectedCar.regNr + " is blocked for uppdating of Online/Offline!");
                 return;
             }

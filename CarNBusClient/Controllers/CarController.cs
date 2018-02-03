@@ -169,7 +169,7 @@ namespace CarNBusClient.Controllers
         public async Task<IActionResult> Edit(Guid id)
         {
             var car = await Utils.Get<Car>("api/Car/" + id);
-            car.Disabled = true; //Prevent updates of Online/Offline while editing
+            car.Locked = true; //Prevent updates of Online/Offline while editing
             await Utils.Put<Car>("api/car/" + id, car);
             var company = await Utils.Get<Company>("api/Company/" + car.CompanyId);
             ViewBag.CompanyName = company.Name;
@@ -186,7 +186,7 @@ namespace CarNBusClient.Controllers
             if (!ModelState.IsValid) return View(car);
             var oldCar = await Utils.Get<Car>("api/Car/" + car.Id);
             oldCar.Online = car.Online;
-            oldCar.Disabled = false; //Enable updates of Online/Offline when editing done
+            oldCar.Locked = false; //Enable updates of Online/Offline when editing done
             await Utils.Put<Car>("api/Car/" + oldCar.Id, oldCar);
 
             return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending update," + oldCar.Id + "," + oldCar.RegNr + "," + oldCar.VIN + "," + car.Online + "," + oldCar.CreationTime });
