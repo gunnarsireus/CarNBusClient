@@ -20,7 +20,7 @@
             //for (var i = 0; i < length; i++) {
             //    let car = {
             //        regNr: getParameterByName('regNr' + i),
-            //        2: getParameterByName('_CarOnlineStatus["online"]' + i)
+            //        2: getParameterByName('online' + i)
             //    };
             //    carArr.push(car);
             //}
@@ -39,7 +39,7 @@
             for (var i = 0; i < cars.length; i++) {
                 let car = {
                     regNr: cars[i].regNr,
-                    online:cars[i]._CarOnlineStatus["online"]
+                    online:cars[i].online
                 };
 
                 var row = table.insertRow(i + 1);

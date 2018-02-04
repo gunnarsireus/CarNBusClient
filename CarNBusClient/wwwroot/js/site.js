@@ -31,11 +31,11 @@ function timerJob() {
             numberOfCars = cars.length;
             const selectedItem = Math.floor(Math.random() * cars.length);
             let selectedCar = cars[selectedItem];
-            if (selectedCar._CarLockedStatus["locked"] === true) {
-                console.log(selectedCar.regNr + " is blocked for uppdating of Online/Offline!");
+            if (selectedCar.locked === true) {
+                console.log(selectedCar.regNr + " is Locked for uppdating of Online/Offline!");
                 return;
             }
-            selectedCar._CarOnlineStatus["online"] = !selectedCar._CarOnlineStatus["online"];
+            selectedCar.online = !selectedCar.online;
             $.ajax({
                 url: 'http://localhost:63484/api/car/' + selectedCar.carId,
                 contentType: "application/json",
@@ -47,7 +47,7 @@ function timerJob() {
             const selector = `#${selectedCar.carId} td:eq(2)`;
             const selector2 = `#${selectedCar.carId + "_2"} td:eq(3)`;
             const selector3 = `#${selectedCar.carId + "_3"}`;
-            if (selectedCar._CarOnlineStatus["online"] === true) {
+            if (selectedCar.online === true) {
                 $(selector).text("Online");
                 $(selector).removeClass("alert-danger");
                 $(selector2).text("Online");
