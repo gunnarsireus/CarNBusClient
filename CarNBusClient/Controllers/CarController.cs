@@ -53,7 +53,7 @@ namespace CarNBusClient.Controllers
             }
 
             if (companies.Any() && id == null)
-                id = companies[0].Id.ToString();
+                id = companies[0].CompanyId.ToString();
             var selectList = new List<SelectListItem>
             {
                 new SelectListItem
@@ -65,8 +65,8 @@ namespace CarNBusClient.Controllers
             selectList.AddRange(companies.Select(company => new SelectListItem
             {
                 Text = company.Name,
-                Value = company.Id.ToString(),
-                Selected = company.Id.ToString() == id
+                Value = company.CompanyId.ToString(),
+                Selected = company.CompanyId.ToString() == id
             }));
             var cars = new List<Car>();
 

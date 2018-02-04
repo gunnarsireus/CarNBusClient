@@ -87,7 +87,7 @@ namespace CarNBusClient.Tests
 
 
 			// Arrange
-			var companyId = company.Id;
+			var companyId = company.CompanyId;
 
 			// Act
 			result = await companyController.Details(companyId);
@@ -147,17 +147,17 @@ namespace CarNBusClient.Tests
 			var carController = new CarController(new UserManager<ApplicationUser>(userStoreMock.Object,
 				null, null, null, null, null, null, null, null));
 
-			var company = new Company { Id = Guid.NewGuid() };
+			var company = new Company { CompanyId = Guid.NewGuid() };
 			var result = await companyController.Create(company);
 			// Assert
 			Assert.IsType<RedirectToActionResult>(result);
 
 
 			// Arrange
-			var companyId = company.Id;
+			var companyId = company.CompanyId;
 
 			// Act
-			var car = new Car { VIN = "YUTDGE98765432165", RegNr = "SOP963", CompanyId = company.Id };
+			var car = new Car { VIN = "YUTDGE98765432165", RegNr = "SOP963", CompanyId = company.CompanyId };
 			result = await carController.Create(car);
 
 			// Assert

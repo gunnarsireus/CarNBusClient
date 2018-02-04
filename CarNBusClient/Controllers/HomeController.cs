@@ -33,7 +33,7 @@ namespace CarNBusClient.Controllers
 
             foreach (var company in companies)
 			{
-				var companyCars = allCars.Where(o => o.CompanyId == company.Id).ToList();
+				var companyCars = allCars.Where(o => o.CompanyId == company.CompanyId).ToList();
 				company.Cars = companyCars;
 			}
 			var homeViewModel = new HomeViewModel { Companies = companies };

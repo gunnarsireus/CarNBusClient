@@ -54,7 +54,7 @@ namespace CarNBusClient.Controllers
             foreach (var company in companies)
             {
                 var cars = await Utils.Get<List<Car>>("api/Car");
-                cars = cars.Where(c => c.CompanyId == company.Id).ToList();
+                cars = cars.Where(c => c.CompanyId == company.CompanyId).ToList();
                 company.Cars = cars;
             }
 
@@ -64,7 +64,7 @@ namespace CarNBusClient.Controllers
                 switch (pending)
                 {
                     case "create":
-                        if (companyViewModel.Companies.All(c => c.Id != pendingId))
+                        if (companyViewModel.Companies.All(c => c.CompanyId != pendingId))
                         {
                             companyViewModel.Companies.Add(new Company(Guid.Parse(id))
                             {
@@ -79,7 +79,7 @@ namespace CarNBusClient.Controllers
                     case "update":
                         foreach (var company in companyViewModel.Companies)
                         {
-                            if (company.Id == pendingId)
+                            if (company.CompanyId == pendingId)
                             {
                                 company.Pending = "Update";
                                 company.Name = companyName;
@@ -91,7 +91,7 @@ namespace CarNBusClient.Controllers
                     case "delete":
                         foreach (var company in companyViewModel.Companies)
                         {
-                            if (company.Id == pendingId)
+                            if (company.CompanyId == pendingId)
                             {
                                 company.Pending = "Delete";
                                 break;
@@ -125,10 +125,10 @@ namespace CarNBusClient.Controllers
         public async Task<IActionResult> Create([Bind("Name,Address,CreationTime")] Company company)
         {
             if (!ModelState.IsValid) return View(company);
-            company.Id = Guid.NewGuid();
+            company.CompanyId = Guid.NewGuid();
             await Utils.Post<Company>("api/Company/", company);
 
-            return RedirectToAction("Index", new { id = company.Id + "|pending create" + "|" + company.Name + "|" + company.Address });
+            return RedirectToAction("Index", new { id = company.CompanyId + "|pending create" + "|" + company.Name + "|" + company.Address });
         }
 
         // GET: Company/Edit/5
@@ -150,9 +150,9 @@ namespace CarNBusClient.Controllers
 
             oldCompany.Name = company.Name;
             oldCompany.Address = company.Address;
-            await Utils.Put<Company>("api/Company/" + oldCompany.Id, oldCompany);
+            await Utils.Put<Company>("api/Company/" + oldCompany.CompanyId, oldCompany);
 
-            return RedirectToAction("Index", new { id = oldCompany.Id + "|pending update" + "|" + company.Name + "|" + company.Address});
+            return RedirectToAction("Index", new { id = oldCompany.CompanyId + "|pending update" + "|" + company.Name + "|" + company.Address});
         }
 
         // GET: Company/Delete/5
@@ -175,7 +175,7 @@ namespace CarNBusClient.Controllers
         private async Task<bool> CompanyExists(Guid id)
         {
             var companies = await Utils.Get<List<Company>>("api/Company");
-            return companies.Any(e => e.Id == id);
+            return companies.Any(e => e.CompanyId == id);
         }
     }
 }
