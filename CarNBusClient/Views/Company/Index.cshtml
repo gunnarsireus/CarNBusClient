@@ -35,7 +35,7 @@
                 {
                     <tr>
                         <td>
-                            @Html.HiddenFor(modelItem => item.Id)
+                            @Html.HiddenFor(modelItem => item.CompanyId)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Name)
@@ -52,9 +52,9 @@
                         <td>
                             @if (String.IsNullOrEmpty(item.Pending) || item.Pending == "Update" || item.Pending == "Create")
                             {
-                                <a href="/Company/Edit/@item.Id">Edit</a> @Html.Raw("|");
-                                <a href="/Company/Details/@item.Id">Details</a> @Html.Raw("|");
-                                <a href="/Company/Delete/@item.Id">Delete</a>
+                                <a href="/Company/Edit/@item.CompanyId">Edit</a> @Html.Raw("|");
+                                <a href="/Company/Details/@item.CompanyId">Details</a> @Html.Raw("|");
+                                <a href="/Company/Delete/@item.CompanyId">Delete</a>
                             }
                             else
                             {
