@@ -181,7 +181,7 @@ namespace CarNBusClient.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id, Online")] Car car)
+        public async Task<IActionResult> Edit(Guid Carid, [Bind("CarId, Online")] Car car)
         {
             if (!ModelState.IsValid) return View(car);
             var oldCar = await Utils.Get<Car>("api/Car/" + car.CarId);

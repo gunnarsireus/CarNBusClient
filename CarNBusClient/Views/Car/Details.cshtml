@@ -30,7 +30,7 @@
         <dt>
             @Html.DisplayNameFor(model => model.Online)
         </dt>
-        @{ var iidd = Model.Id + "_3"; var cl = Model.Online ? "" : "alert-danger";}
+        @{ var iidd = Model.CarId + "_3"; var cl = Model.Online ? "" : "alert-danger";}
         <dd id="@iidd" class="@cl" style="max-width: 50px;">
             @Html.DisplayFor(model => model.OnlineOrOffline)
         </dd>
@@ -39,7 +39,7 @@
 <div>
     @{var listString = "Index/" + Model.CompanyId; }
     <p>
-        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+        <a asp-action="Edit" asp-route-id="@Model.CarId">Edit</a> |
         <a asp-action="@listString">Back to list</a>
     </p>
 </div>
