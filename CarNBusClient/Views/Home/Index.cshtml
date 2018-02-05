@@ -39,30 +39,36 @@
                     {
                         if (j == 0)
                         {
-                            <tr>
-                                <th>
-                                    @Html.DisplayNameFor(model => cars[j].VIN)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => cars[j].RegNr)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => cars[j].Online)
-                                </th>
-                                </tr>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => cars[j].VIN)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => cars[j].RegNr)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => cars[j].ConvertSpeed)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => cars[j].Online)
+                        </th>
+                    </tr>
 }
-                        <tr id="@cars[j].CarId">
-                            <td>
-                                @Html.DisplayFor(model => cars[j].VIN)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(model => cars[j].RegNr)
-                            </td>
-                            @{ var cl = cars[j].Online ? "" : "alert-danger";}
-                            <td class="@cl">
-                                @Html.DisplayFor(model => cars[j].OnlineOrOffline)
-                            </td>
-                        </tr> if (j == cars.Count - 1)
+                    <tr id="@cars[j].CarId">
+                        <td>
+                            @Html.DisplayFor(model => cars[j].VIN)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => cars[j].RegNr)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => cars[j].ConvertSpeed)
+                        </td>
+                        @{ var cl = cars[j].Online ? "" : "alert-danger";}
+                        <td class="@cl">
+                            @Html.DisplayFor(model => cars[j].OnlineOrOffline)
+                        </td>
+                    </tr> if (j == cars.Count - 1)
                                 {
                                     <tr><td colspan="3"></td></tr>}
                                 }

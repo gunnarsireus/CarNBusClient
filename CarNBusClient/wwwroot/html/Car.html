@@ -9,6 +9,7 @@
         <tr>
             <th>RegNr</th>
             <th>Online</th>
+            <th>Km/h</th>
             <th>In queue</th>
             <th>Out queue</th>
         </tr>
@@ -28,6 +29,9 @@
             window.setTimeout(getCars, oneSecond);
         })();
 
+        function convertSpeed(s) {
+            return Math.round(s / 10) + "," + Math.round(s % 10);
+        }
 
         function createTable(cars) {
             var table = document.getElementById("myTable");
@@ -39,7 +43,8 @@
             for (var i = 0; i < cars.length; i++) {
                 let car = {
                     regNr: cars[i].regNr,
-                    online:cars[i].online
+                    online: cars[i].online,
+                    speed: cars[1].speed
                 };
 
                 var row = table.insertRow(i + 1);
@@ -47,10 +52,12 @@
                 var cell1 = row.insertCell(1);
                 var cell2 = row.insertCell(2);
                 var cell3 = row.insertCell(3);
+                var cell4 = row.insertCell(4);
                 cell0.innerHTML = car.regNr;
                 cell1.innerHTML = car.online;
-                cell2.innerHTML = 0;
+                cell2.innerHTML = convertSpeed(car.speed);
                 cell3.innerHTML = 0;
+                cell4.innerHTML = 0;
             }
         }
 

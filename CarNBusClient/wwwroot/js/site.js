@@ -17,6 +17,7 @@ let longInterval = 10000;
 let numberOfCars = 1;
 
 function timerJob() {
+    return;
     const oneSecond = 1000;
     $.ajax({
         url: "http://localhost:63484/api/car",
@@ -44,8 +45,8 @@ function timerJob() {
                 dataType: "json"
             });
 
-            const selector = `#${selectedCar.carId} td:eq(2)`;
-            const selector2 = `#${selectedCar.carId + "_2"} td:eq(3)`;
+            const selector = `#${selectedCar.carId} td:eq(3)`;
+            const selector2 = `#${selectedCar.carId + "_2"} td:eq(4)`;
             const selector3 = `#${selectedCar.carId + "_3"}`;
             if (selectedCar.online === true) {
                 $(selector).text("Online");

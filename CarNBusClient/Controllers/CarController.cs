@@ -205,7 +205,7 @@ namespace CarNBusClient.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid Carid, [Bind("CarId, Online")] Car car)
+        public async Task<IActionResult> Edit(Guid Carid, [Bind("CarId, Online, Speed")] Car car)
         {
             if (!ModelState.IsValid) return View(car);
             var oldCar = await Utils.Get<Car>("api/Car/" + car.CarId);
@@ -214,6 +214,7 @@ namespace CarNBusClient.Controllers
                 return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending timeout," + oldCar.CarId + "," + oldCar.RegNr + "," + oldCar.VIN + "," + car.Online + "," + oldCar.CreationTime });
             }
             oldCar.Online = car.Online;
+            oldCar.Speed = car.Speed;
             oldCar.Locked = false; //Enable updates of Online/Offline when editing done
             await Utils.Put<Car>("api/Car/" + oldCar.CarId, oldCar);
 

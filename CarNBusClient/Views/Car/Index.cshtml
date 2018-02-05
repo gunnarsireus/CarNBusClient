@@ -43,6 +43,9 @@
                         @Html.DisplayNameFor(model => model.Cars[0].RegNr)
                     </th>
                     <th>
+                        @Html.DisplayNameFor(model => model.Cars[0].ConvertSpeed)
+                    </th>
+                    <th>
                         @Html.DisplayNameFor(model => model.Cars[0].CreationTime)
                     </th>
                     <th>
@@ -58,36 +61,39 @@
                 {
                     var iidd = item.CarId + "_2";
 
-                    <tr id="@iidd">
-                        <td>
-                            @Html.DisplayFor(modelItem => item.VIN)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.RegNr)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CreationTime)
-                        </td>
-                        @{ var cl = item.Online ? "" : "alert-danger";}
-                        <td class="@cl">
-                            @Html.DisplayFor(modelItem => item.OnlineOrOffline)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Pending)
-                        </td>
-                        <td>
-                            @if (String.IsNullOrEmpty(item.Pending) || item.Pending=="Update" || item.Pending=="Create")
-                            {
-                                <a href="/Car/Edit/@item.CarId">Edit</a> @Html.Raw("|");
-                                <a href="/Car/Details/@item.CarId">Details</a> @Html.Raw("|");
-                                <a href="/Car/Delete/@item.CarId">Delete</a>
-                            }
-                            else
-                            {
-                                @Html.Raw("Edit | Details | Delete");
-                            }
-                        </td>
-                    </tr>}
+                <tr id="@iidd">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.VIN)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.RegNr)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ConvertSpeed)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreationTime)
+                    </td>
+                    @{ var cl = item.Online ? "" : "alert-danger";}
+                    <td class="@cl">
+                        @Html.DisplayFor(modelItem => item.OnlineOrOffline)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Pending)
+                    </td>
+                    <td>
+                        @if (String.IsNullOrEmpty(item.Pending) || item.Pending == "Update" || item.Pending == "Create")
+        {
+                <a href="/Car/Edit/@item.CarId">Edit</a> @Html.Raw("|");
+                <a href="/Car/Details/@item.CarId">Details</a> @Html.Raw("|");
+                <a href="/Car/Delete/@item.CarId">Delete</a>
+}
+else
+{
+                @Html.Raw("Edit | Details | Delete");
+}
+                    </td>
+                </tr>}
             </tbody>
         </table>
     </div>
