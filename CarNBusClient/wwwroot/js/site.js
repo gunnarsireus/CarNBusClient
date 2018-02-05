@@ -1,78 +1,160 @@
 ﻿// Write your JavaScript code.
 $(document).ready(function () {
     timerJob();
+    timerJob2();
     console.log('documentReady');
 });
 
 $(".uppercase").keyup(function () {
     var text = $(this).val();
     $(this).val(text.toUpperCase());
-});
+});0
 
 function clearErrors() {
     $(".validation-summary-errors").empty();
 };
 
-let longInterval = 10000;
-let numberOfCars = 1;
+let longInterval = 20000;
+let longInterval2 = 10000;
+let numberOfCars = 7;
+
+function convertSpeed(s) {
+    return Math.round(s / 10) + "," + Math.round(s % 10);
+}
+
 
 function timerJob() {
-    return;
-    const oneSecond = 1000;
-    $.ajax({
-        url: "http://localhost:63484/api/car",
-        type: "GET",
-        dataType: "json",
-        success: function (cars) {
-            if (cars.length === 0) {
-                setTimeout(timerJob, oneSecond);
-                console.log("No vehicles found!");
-                return;
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function () {
+        if (xmlhttp.readyState === XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+            if (xmlhttp.status === 200) {
+                let cars = JSON.parse(xmlhttp.responseText);
+                updateOnline(cars);
             }
-            numberOfCars = cars.length;
-            const selectedItem = Math.floor(Math.random() * cars.length);
-            let selectedCar = cars[selectedItem];
-            if (selectedCar.locked === true) {
-                console.log(selectedCar.regNr + " is Locked for uppdating of Online/Offline!");
-                return;
-            }
-            selectedCar.online = !selectedCar.online;
-            $.ajax({
-                url: 'http://localhost:63484/api/car/' + selectedCar.carId,
-                contentType: "application/json",
-                type: "PUT",
-                data: JSON.stringify(selectedCar),
-                dataType: "json"
-            });
-
-            const selector = `#${selectedCar.carId} td:eq(3)`;
-            const selector2 = `#${selectedCar.carId + "_2"} td:eq(4)`;
-            const selector3 = `#${selectedCar.carId + "_3"}`;
-            if (selectedCar.online === true) {
-                $(selector).text("Online");
-                $(selector).removeClass("alert-danger");
-                $(selector2).text("Online");
-                $(selector2).removeClass("alert-danger");
-                $(selector3).text("Online");
-                $(selector3).removeClass("alert-danger");
-                console.log(selectedCar.regNr + " is Online!");
+            else if (xmlhttp.status === 400) {
+                alert('There was an error 400');
             }
             else {
-                $(selector).text("Offline");
-                $(selector).addClass("alert-danger");
-                $(selector2).text("Offline");
-                $(selector2).addClass("alert-danger");
-                $(selector3).text("Offline");
-                $(selector3).addClass("alert-danger");
-                console.log(selectedCar.regNr + " is Offline!");
-            }
-            if (document.getElementById("All") !== null) {
-                doFiltering();
+                alert('something else other than 200 was returned');
             }
         }
+    };
+
+    xmlhttp.open("GET", "http://localhost:63484/api/car", true);
+    xmlhttp.send();
+}
+
+function timerJob2() {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function () {
+        if (xmlhttp.readyState === XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+            if (xmlhttp.status === 200) {
+                let cars = JSON.parse(xmlhttp.responseText);
+                updateSpeed(cars);
+            }
+            else if (xmlhttp.status === 400) {
+                alert('There was an error 400');
+            }
+            else {
+                alert('something else other than 200 was returned');
+            }
+        }
+    };
+
+    xmlhttp.open("GET", "http://localhost:63484/api/car", true);
+    xmlhttp.send();
+}
+
+function updateOnline(cars) {
+    if (cars.length === 0) {
+        setTimeout(timerJob, oneSecond);
+        console.log("No vehicles found!");
+        return;
+    }
+    numberOfCars = cars.length;
+    const selectedItem = Math.floor(Math.random() * cars.length);
+    let selectedCar = cars[selectedItem];
+    if (selectedCar.locked === true) {
+        console.log(selectedCar.regNr + " is Locked for uppdating of Online/Offline!");
+        return;
+    }
+    selectedCar.online = !selectedCar.online;
+    $.ajax({
+        url: 'http://localhost:63484/api/car/' + selectedCar.carId,
+        contentType: "application/json",
+        type: "PUT",
+        data: JSON.stringify(selectedCar),
+        dataType: "json"
     });
-    longInterval = Math.round(10000 / numberOfCars);
+
+    const onlineSelector = `#${selectedCar.carId} td:eq(3)`;
+    const onlineSelector2 = `#${selectedCar.carId + "_2"} td:eq(4)`;
+    const onlineSelector3 = `#${selectedCar.carId + "_3"}`;
+    if (selectedCar.online === true) {
+        $(onlineSelector).text("Online");
+        $(onlineSelector).removeClass("alert-danger");
+        $(onlineSelector2).text("Online");
+        $(onlineSelector2).removeClass("alert-danger");
+        $(onlineSelector3).text("Online");
+        $(onlineSelector3).removeClass("alert-danger");
+        console.log(selectedCar.regNr + " is Online!");
+    }
+    else {
+        $(onlineSelector).text("Offline");
+        $(onlineSelector).addClass("alert-danger");
+        $(onlineSelector2).text("Offline");
+        $(onlineSelector2).addClass("alert-danger");
+        $(onlineSelector3).text("Offline");
+        $(onlineSelector3).addClass("alert-danger");
+        console.log(selectedCar.regNr + " is Offline!");
+    }
+
+    if (document.getElementById("All") !== null) {
+        doFiltering();
+    }
+    longInterval = Math.round(longInterval / numberOfCars);
     setTimeout(timerJob, longInterval);
+}
+
+function updateSpeed(cars) {
+    if (cars.length === 0) {
+        setTimeout(timerJob2, oneSecond);
+        console.log("No vehicles found!");
+        return;
+    }
+    numberOfCars = cars.length;
+    const selectedItem = Math.floor(Math.random() * cars.length);
+    let selectedCar = cars[selectedItem];
+    if (selectedCar.locked === true) {
+        console.log(selectedCar.regNr + " is Locked for uppdating of Online/Offline!");
+        return;
+    }
+    const delta = Math.round(selectedCar.speed / 10);
+    selectedCar.speed = selectedCar.speed + delta / 2 - Math.floor(Math.random() * delta);
+    $.ajax({
+        url: 'http://localhost:63484/api/car/' + selectedCar.carId,
+        contentType: "application/json",
+        type: "PUT",
+        data: JSON.stringify(selectedCar),
+        dataType: "json"
+    });
+
+    const speedSelector = `#${selectedCar.carId} td:eq(2)`;
+    const speedSelector2 = `#${selectedCar.carId + "_2"} td:eq(3)`;
+    const speedSelector3 = `#${selectedCar.carId + "_3"}`;
+    if (selectedCar.online === true) {
+        $(speedSelector).text(convertSpeed(selectedCar.speed));
+        $(speedSelector2).text(convertSpeed(selectedCar.speed));
+        $(speedSelector3).text(convertSpeed(selectedCar.speed));
+    }
+    else {
+        $(speedSelector).text(convertSpeed(selectedCar.speed));
+        $(speedSelector2).text(convertSpeed(selectedCar.speed));
+        $(speedSelector3).text(convertSpeed(selectedCar.speed));
+    }
+
+    longInterval2 = Math.round(longInterval2 / numberOfCars);
+    setTimeout(timerJob2, longInterval2);
 }
 
 function doFiltering() {
@@ -91,7 +173,7 @@ function doFiltering() {
     var table = $('#cars > tbody');
     $('tr', table).each(function () {
         $(this).removeClass("hidden");
-        let td = $('td:eq(2)', $(this)).html();
+        let td = $('td:eq(3)', $(this)).html();
         if (td !== undefined) {
             td = td.trim();
         }
