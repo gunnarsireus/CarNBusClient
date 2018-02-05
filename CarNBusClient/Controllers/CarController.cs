@@ -217,13 +217,17 @@ namespace CarNBusClient.Controllers
             oldCar.Locked = false; //Enable updates of Online/Offline when editing done
             await Utils.Put<Car>("api/Car/" + oldCar.CarId, oldCar);
 
-            return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending update," + oldCar.CarId + "," + oldCar.RegNr + "," + oldCar.VIN + "," + car.Online + "," + oldCar.CreationTime });
+            return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending update," + oldCar.CarId + "," + oldCar.RegNr + "," + oldCar.VIN + "," + oldCar.Online + "," + oldCar.CreationTime });
         }
 
         // GET: Car/Delete/5
         public async Task<IActionResult> Delete(Guid id)
         {
             var car = await Utils.Get<Car>("api/Car/" + id);
+            if (car.Locked)
+            {
+                return RedirectToAction("Index", new { id = car.CompanyId + ",pending edit," + car.CarId + "," + car.RegNr + "," + car.VIN + "," + car.Online + "," + car.CreationTime });
+            }
             return View(car);
         }
 
@@ -233,9 +237,13 @@ namespace CarNBusClient.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var car = await Utils.Get<Car>("api/Car/" + id);
+            var oldCar = await Utils.Get<Car>("api/Car/" + id);
+            if (!oldCar.Locked)
+            {
+                return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending timeout," + oldCar.CarId + "," + oldCar.RegNr + "," + oldCar.VIN + "," + oldCar.Online + "," + oldCar.CreationTime });
+            }
             await Utils.Delete<Car>("api/Car/" + id);
-            return RedirectToAction("Index", new { id = car.CompanyId + ",pending delete," + id });
+            return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending delete," + id });
         }
 
         public async Task<bool> RegNrAvailable(string regNr)
