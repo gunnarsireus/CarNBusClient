@@ -228,6 +228,8 @@ namespace CarNBusClient.Controllers
             {
                 return RedirectToAction("Index", new { id = car.CompanyId + ",pending edit," + car.CarId + "," + car.RegNr + "," + car.VIN + "," + car.Online + "," + car.CreationTime });
             }
+            car.Locked = true; //Prevent updates of Online/Offline while editing
+            await Utils.Put<Car>("api/car/" + id, car);
             return View(car);
         }
 
