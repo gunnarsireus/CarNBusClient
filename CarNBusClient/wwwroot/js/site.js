@@ -14,8 +14,8 @@ function clearErrors() {
     $(".validation-summary-errors").empty();
 };
 
-let longInterval = 20000;
-let longInterval2 = 10000;
+let longInterval = 10000;
+let longInterval2 = 100;
 let numberOfCars = 7;
 
 function convertSpeed(s) {
@@ -35,7 +35,7 @@ function timerJob() {
                 alert('There was an error 400');
             }
             else {
-                alert('something else other than 200 was returned');
+                //alert('something else other than 200 was returned: ' + xmlhttp.status);
             }
         }
     };
@@ -56,7 +56,7 @@ function timerJob2() {
                 alert('There was an error 400');
             }
             else {
-                alert('something else other than 200 was returned');
+                //alert('something else other than 200 was returned: ' + xmlhttp.status);
             }
         }
     };
@@ -140,7 +140,7 @@ function updateSpeed(cars) {
     });
 
     const speedSelector = `#${selectedCar.carId} td:eq(2)`;
-    const speedSelector2 = `#${selectedCar.carId + "_2"} td:eq(3)`;
+    const speedSelector2 = `#${selectedCar.carId + "_2"} td:eq(2)`;
     const speedSelector3 = `#${selectedCar.carId + "_3"}`;
     if (selectedCar.online === true) {
         $(speedSelector).text(convertSpeed(selectedCar.speed));

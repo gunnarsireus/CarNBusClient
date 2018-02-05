@@ -41,7 +41,7 @@ namespace CarNBusClient.Models
 		public bool Locked { get; set; } //Used to block changes of Online/Offline status
 		public string Pending { get; set; }  //Pending change sin database
         public long Speed { get; set; }
-        [Display(Name = "Km/H")]
+        [Display(Name = "Km/h")]
         public string ConvertSpeed => (Speed / 10).ToString() + "," + (Speed % 10).ToString();
 	}
 }
