@@ -121,6 +121,26 @@ namespace CarNBusClient.Controllers
                             }
                         }
                         break;
+                    case "edit":
+                        foreach (var car in carListViewModel.Cars)
+                        {
+                            if (car.CarId == pendingId)
+                            {
+                                car.Pending = "Editing";
+                                break;
+                            }
+                        }
+                        break;
+                    case "timeout":
+                        foreach (var car in carListViewModel.Cars)
+                        {
+                            if (car.CarId == pendingId)
+                            {
+                                car.Pending = "No Change";
+                                break;
+                            }
+                        }
+                        break;
                 }
             }
 
@@ -169,6 +189,10 @@ namespace CarNBusClient.Controllers
         public async Task<IActionResult> Edit(Guid id)
         {
             var car = await Utils.Get<Car>("api/Car/" + id);
+            if (car.Locked)
+            {
+                return RedirectToAction("Index", new { id = car.CompanyId + ",pending edit," + car.CarId + "," + car.RegNr + "," + car.VIN + "," + car.Online + "," + car.CreationTime });
+            }
             car.Locked = true; //Prevent updates of Online/Offline while editing
             await Utils.Put<Car>("api/car/" + id, car);
             var company = await Utils.Get<Company>("api/Company/" + car.CompanyId);
@@ -185,6 +209,10 @@ namespace CarNBusClient.Controllers
         {
             if (!ModelState.IsValid) return View(car);
             var oldCar = await Utils.Get<Car>("api/Car/" + car.CarId);
+            if (!oldCar.Locked)
+            {
+                return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending timeout," + oldCar.CarId + "," + oldCar.RegNr + "," + oldCar.VIN + "," + car.Online + "," + oldCar.CreationTime });
+            }
             oldCar.Online = car.Online;
             oldCar.Locked = false; //Enable updates of Online/Offline when editing done
             await Utils.Put<Car>("api/Car/" + oldCar.CarId, oldCar);
