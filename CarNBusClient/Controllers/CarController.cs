@@ -126,7 +126,7 @@ namespace CarNBusClient.Controllers
                         {
                             if (car.CarId == pendingId)
                             {
-                                car.Pending = "Editing";
+                                car.Pending = "Edit";
                                 break;
                             }
                         }
@@ -136,7 +136,7 @@ namespace CarNBusClient.Controllers
                         {
                             if (car.CarId == pendingId)
                             {
-                                car.Pending = "No Change";
+                                car.Pending = "Timeout";
                                 break;
                             }
                         }

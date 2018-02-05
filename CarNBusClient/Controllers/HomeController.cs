@@ -25,12 +25,6 @@ namespace CarNBusClient.Controllers
 			}
 
 			var allCars = await Utils.Get<List<Car>>("api/Car");
-            foreach (var car in allCars)
-            {
-                car.Locked = false; //Enable updates of Online/Offline
-                await Utils.Put<Car>("api/Car/" + car.CarId, car);
-            }
-
             foreach (var company in companies)
 			{
 				var companyCars = allCars.Where(o => o.CompanyId == company.CompanyId).ToList();

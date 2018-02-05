@@ -11,6 +11,7 @@ namespace CarNBusClient.Models
 		{
 			CreationTime = DateTime.Now.ToString(new CultureInfo("sv-SE"));
 			Online = true;
+            Speed = 550;
 		}
 		public Car(Guid companyId) : this()
 		{

@@ -17,6 +17,7 @@ function clearErrors() {
 let longInterval = 10000;
 let longInterval2 = 100;
 let numberOfCars = 7;
+const oneSecond = 1000;
 
 function convertSpeed(s) {
     return Math.round(s / 10) + "," + Math.round(s % 10);
@@ -76,6 +77,8 @@ function updateOnline(cars) {
     let selectedCar = cars[selectedItem];
     if (selectedCar.locked === true) {
         console.log(selectedCar.regNr + " is Locked for uppdating of Online/Offline!");
+        longInterval = Math.round(longInterval / numberOfCars);
+        setTimeout(timerJob, longInterval);
         return;
     }
     selectedCar.online = !selectedCar.online;
@@ -127,6 +130,8 @@ function updateSpeed(cars) {
     let selectedCar = cars[selectedItem];
     if (selectedCar.locked === true) {
         console.log(selectedCar.regNr + " is Locked for uppdating of Online/Offline!");
+        longInterval2 = Math.round(longInterval2 / numberOfCars);
+        setTimeout(timerJob2, longInterval2);
         return;
     }
     const delta = Math.round(selectedCar.speed / 10);
@@ -141,7 +146,7 @@ function updateSpeed(cars) {
 
     const speedSelector = `#${selectedCar.carId} td:eq(2)`;
     const speedSelector2 = `#${selectedCar.carId + "_2"} td:eq(2)`;
-    const speedSelector3 = `#${selectedCar.carId + "_3"}`;
+    const speedSelector3 = `#${selectedCar.carId + "_4"}`;
     if (selectedCar.online === true) {
         $(speedSelector).text(convertSpeed(selectedCar.speed));
         $(speedSelector2).text(convertSpeed(selectedCar.speed));
