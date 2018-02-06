@@ -197,6 +197,8 @@ namespace CarNBusClient.Controllers
             await Utils.Put<Car>("api/car/" + id, car);
             var company = await Utils.Get<Company>("api/Company/" + car.CompanyId);
             ViewBag.CompanyName = company.Name;
+            car.OldOnline = car.Online;
+            car.OldSpeed = car.Speed;
             return View(car);
         }
 
@@ -205,11 +207,11 @@ namespace CarNBusClient.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid Carid, [Bind("CarId, Online, Speed")] Car car)
+        public async Task<IActionResult> Edit(Guid Carid, [Bind("CarId, Online, Speed, OldOnline, OldSpeed")] Car car)
         {
             if (!ModelState.IsValid) return View(car);
             var oldCar = await Utils.Get<Car>("api/Car/" + car.CarId);
-            if (!oldCar.Locked)
+            if (!oldCar.Locked || oldCar.Speed!=car.OldSpeed || oldCar.Online!= car.OldOnline)
             {
                 return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending timeout," + oldCar.CarId + "," + oldCar.RegNr + "," + oldCar.VIN + "," + car.Online + "," + oldCar.CreationTime });
             }

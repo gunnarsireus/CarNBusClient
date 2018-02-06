@@ -44,5 +44,7 @@ namespace CarNBusClient.Models
         public long Speed { get; set; }
         [Display(Name = "Km/h")]
         public string ConvertSpeed => (Speed / 10).ToString() + "," + (Speed % 10).ToString();
+        public bool OldOnline { get; set; }
+        public long OldSpeed { get; set; }
 	}
 }
