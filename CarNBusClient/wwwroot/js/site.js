@@ -15,7 +15,7 @@ function clearErrors() {
 };
 
 let longInterval = 10000;
-let longInterval2 = 100;
+let longInterval2 = 10;
 let numberOfCars = 7;
 const oneSecond = 1000;
 
@@ -115,8 +115,8 @@ function updateOnline(cars) {
     if (document.getElementById("All") !== null) {
         doFiltering();
     }
-    longInterval = Math.round(longInterval / numberOfCars);
-    setTimeout(timerJob, longInterval);
+    let interval = Math.round(longInterval / numberOfCars);
+    setTimeout(timerJob, interval);
 }
 
 function updateSpeed(cars) {
@@ -130,8 +130,8 @@ function updateSpeed(cars) {
     let selectedCar = cars[selectedItem];
     if (selectedCar.locked === true) {
         console.log(selectedCar.regNr + " is Locked for uppdating of Online/Offline!");
-        longInterval2 = Math.round(longInterval2 / numberOfCars);
-        setTimeout(timerJob2, longInterval2);
+        let interval = Math.round(longInterval2 / numberOfCars);
+        setTimeout(timerJob2, interval);
         return;
     }
     const delta = Math.round(selectedCar.speed / 10);
