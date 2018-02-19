@@ -194,7 +194,7 @@ namespace CarNBusClient.Controllers
                 return RedirectToAction("Index", new { id = car.CompanyId + ",pending edit," + car.CarId + "," + car.RegNr + "," + car.VIN + "," + car.Online + "," + car.CreationTime });
             }
             car.Locked = true; //Prevent updates of Online/Offline while editing
-            await Utils.Put<Car>("api/write/car/" + id, car);
+            await Utils.Put<Car>("api/write/car/online/" + id, car);
             var company = await Utils.Get<Company>("api/Company/" + car.CompanyId);
             ViewBag.CompanyName = company.Name;
             car.OldOnline = car.Online;
@@ -216,10 +216,11 @@ namespace CarNBusClient.Controllers
                 return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending timeout," + oldCar.CarId + "," + oldCar.RegNr + "," + oldCar.VIN + "," + car.Online + "," + oldCar.CreationTime });
             }
             oldCar.Online = car.Online;
+            await Utils.Put<Car>("api/write/Car/online/" + oldCar.CarId, oldCar);
             oldCar.Speed = car.Speed;
+            await Utils.Put<Car>("api/write/Car/speed/" + oldCar.CarId, oldCar);
             oldCar.Locked = false; //Enable updates of Online/Offline when editing done
-            await Utils.Put<Car>("api/write/Car/" + oldCar.CarId, oldCar);
-
+            await Utils.Put<Car>("api/write/Car/locked/" + oldCar.CarId, oldCar);
             return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending update," + oldCar.CarId + "," + oldCar.RegNr + "," + oldCar.VIN + "," + oldCar.Online + "," + oldCar.CreationTime });
         }
 

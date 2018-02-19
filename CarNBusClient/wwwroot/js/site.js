@@ -83,7 +83,7 @@ function updateOnline(cars) {
     }
     selectedCar.online = !selectedCar.online;
     $.ajax({
-        url: 'http://localhost:63484/api/write/car/' + selectedCar.carId,
+        url: 'http://localhost:63484/api/write/car/online/' + selectedCar.carId,
         contentType: "application/json",
         type: "PUT",
         data: JSON.stringify(selectedCar),
@@ -137,7 +137,7 @@ function updateSpeed(cars) {
     const delta = Math.round(selectedCar.speed / 10);
     selectedCar.speed = selectedCar.speed + delta / 2 - Math.floor(Math.random() * delta);
     $.ajax({
-        url: 'http://localhost:63484/api/write/car/' + selectedCar.carId,
+        url: 'http://localhost:63484/api/write/car/speed/' + selectedCar.carId,
         contentType: "application/json",
         type: "PUT",
         data: JSON.stringify(selectedCar),
