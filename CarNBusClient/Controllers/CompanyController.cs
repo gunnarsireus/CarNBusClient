@@ -51,10 +51,12 @@ namespace CarNBusClient.Controllers
                         break;
                 }
             }
+
+            var allCars = await Utils.Get<List<Car>>("api/read/car");
             foreach (var company in companies)
             {
-                var cars = await Utils.Get<List<Car>>("api/Car");
-                cars = cars.Where(c => c.CompanyId == company.CompanyId).ToList();
+
+                var cars = allCars.Where(c => c.CompanyId == company.CompanyId).ToList();
                 company.Cars = cars;
             }
 
