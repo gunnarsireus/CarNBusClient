@@ -72,7 +72,7 @@ namespace CarNBusClient.Controllers
 
             if (id != null)
             {
-                cars = await Utils.Get<List<Car>>("api/Car");
+                cars = await Utils.Get<List<Car>>("api/read/Car");
                 var companyId = new Guid(id);
                 cars = cars.Where(o => o.CompanyId == companyId).ToList();
             }
@@ -151,7 +151,7 @@ namespace CarNBusClient.Controllers
         // GET: Car/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
-            var car = await Utils.Get<Car>("api/Car/" + id);
+            var car = await Utils.Get<Car>("api/read/Car/" + id);
             var company = await Utils.Get<Company>("api/Company/" + car.CompanyId);
             ViewBag.CompanyName = company.Name;
             return View(car);
@@ -180,7 +180,7 @@ namespace CarNBusClient.Controllers
         {
             if (!ModelState.IsValid) return View(car);
             car.CarId = Guid.NewGuid();
-            await Utils.Post<Car>("api/Car/", car);
+            await Utils.Post<Car>("api/write/Car/", car);
 
             return RedirectToAction("Index", new { id = car.CompanyId + ",pending create," + car.CarId + "," + car.RegNr + "," + car.VIN + "," + car.Online + "," + car.CreationTime });
         }
@@ -188,13 +188,13 @@ namespace CarNBusClient.Controllers
         // GET: Car/Edit/5
         public async Task<IActionResult> Edit(Guid id)
         {
-            var car = await Utils.Get<Car>("api/Car/" + id);
+            var car = await Utils.Get<Car>("api/read/Car/" + id);
             if (car.Locked)
             {
                 return RedirectToAction("Index", new { id = car.CompanyId + ",pending edit," + car.CarId + "," + car.RegNr + "," + car.VIN + "," + car.Online + "," + car.CreationTime });
             }
             car.Locked = true; //Prevent updates of Online/Offline while editing
-            await Utils.Put<Car>("api/car/" + id, car);
+            await Utils.Put<Car>("api/write/car/" + id, car);
             var company = await Utils.Get<Company>("api/Company/" + car.CompanyId);
             ViewBag.CompanyName = company.Name;
             car.OldOnline = car.Online;
@@ -210,7 +210,7 @@ namespace CarNBusClient.Controllers
         public async Task<IActionResult> Edit(Guid Carid, [Bind("CarId, Online, Speed, OldOnline, OldSpeed")] Car car)
         {
             if (!ModelState.IsValid) return View(car);
-            var oldCar = await Utils.Get<Car>("api/Car/" + car.CarId);
+            var oldCar = await Utils.Get<Car>("api/read/Car/" + car.CarId);
             if (!oldCar.Locked || oldCar.Speed!=car.OldSpeed || oldCar.Online!= car.OldOnline)
             {
                 return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending timeout," + oldCar.CarId + "," + oldCar.RegNr + "," + oldCar.VIN + "," + car.Online + "," + oldCar.CreationTime });
@@ -218,7 +218,7 @@ namespace CarNBusClient.Controllers
             oldCar.Online = car.Online;
             oldCar.Speed = car.Speed;
             oldCar.Locked = false; //Enable updates of Online/Offline when editing done
-            await Utils.Put<Car>("api/Car/" + oldCar.CarId, oldCar);
+            await Utils.Put<Car>("api/write/Car/" + oldCar.CarId, oldCar);
 
             return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending update," + oldCar.CarId + "," + oldCar.RegNr + "," + oldCar.VIN + "," + oldCar.Online + "," + oldCar.CreationTime });
         }
@@ -226,13 +226,13 @@ namespace CarNBusClient.Controllers
         // GET: Car/Delete/5
         public async Task<IActionResult> Delete(Guid id)
         {
-            var car = await Utils.Get<Car>("api/Car/" + id);
+            var car = await Utils.Get<Car>("api/read/Car/" + id);
             if (car.Locked)
             {
                 return RedirectToAction("Index", new { id = car.CompanyId + ",pending edit," + car.CarId + "," + car.RegNr + "," + car.VIN + "," + car.Online + "," + car.CreationTime });
             }
             car.Locked = true; //Prevent updates of Online/Offline while editing
-            await Utils.Put<Car>("api/car/" + id, car);
+            await Utils.Put<Car>("api/write/car/" + id, car);
             return View(car);
         }
 
@@ -242,24 +242,24 @@ namespace CarNBusClient.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var oldCar = await Utils.Get<Car>("api/Car/" + id);
+            var oldCar = await Utils.Get<Car>("api/read/Car/" + id);
             if (!oldCar.Locked)
             {
                 return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending timeout," + oldCar.CarId + "," + oldCar.RegNr + "," + oldCar.VIN + "," + oldCar.Online + "," + oldCar.CreationTime });
             }
-            await Utils.Delete<Car>("api/Car/" + id);
+            await Utils.Delete<Car>("api/write/Car/" + id);
             return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending delete," + id });
         }
 
         public async Task<bool> RegNrAvailable(string regNr)
         {
-            var cars = await Utils.Get<List<Car>>("api/Car");
+            var cars = await Utils.Get<List<Car>>("api/read/Car");
             return cars.All(c => c.RegNr != regNr);
         }
 
         public async Task<bool> VinAvailable(string vin)
         {
-            var cars = await Utils.Get<List<Car>>("api/Car");
+            var cars = await Utils.Get<List<Car>>("api/read/Car");
             return cars.All(c => c.VIN != vin);
         }
     }

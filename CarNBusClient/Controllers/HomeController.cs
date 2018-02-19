@@ -24,7 +24,7 @@ namespace CarNBusClient.Controllers
 				return View(new HomeViewModel { Companies = new List<Company>()});
 			}
 
-			var allCars = await Utils.Get<List<Car>>("api/Car");
+			var allCars = await Utils.Get<List<Car>>("api/read/Car");
             foreach (var company in companies)
 			{
 				var companyCars = allCars.Where(o => o.CompanyId == company.CompanyId).ToList();

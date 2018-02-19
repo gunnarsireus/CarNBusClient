@@ -41,7 +41,7 @@ function timerJob() {
         }
     };
 
-    xmlhttp.open("GET", "http://localhost:63484/api/car", true);
+    xmlhttp.open("GET", "http://localhost:63484/api/read/car", true);
     xmlhttp.send();
 }
 
@@ -62,7 +62,7 @@ function timerJob2() {
         }
     };
 
-    xmlhttp.open("GET", "http://localhost:63484/api/car", true);
+    xmlhttp.open("GET", "http://localhost:63484/api/read/car", true);
     xmlhttp.send();
 }
 
@@ -83,7 +83,7 @@ function updateOnline(cars) {
     }
     selectedCar.online = !selectedCar.online;
     $.ajax({
-        url: 'http://localhost:63484/api/car/' + selectedCar.carId,
+        url: 'http://localhost:63484/api/write/car/' + selectedCar.carId,
         contentType: "application/json",
         type: "PUT",
         data: JSON.stringify(selectedCar),
@@ -137,7 +137,7 @@ function updateSpeed(cars) {
     const delta = Math.round(selectedCar.speed / 10);
     selectedCar.speed = selectedCar.speed + delta / 2 - Math.floor(Math.random() * delta);
     $.ajax({
-        url: 'http://localhost:63484/api/car/' + selectedCar.carId,
+        url: 'http://localhost:63484/api/write/car/' + selectedCar.carId,
         contentType: "application/json",
         type: "PUT",
         data: JSON.stringify(selectedCar),
