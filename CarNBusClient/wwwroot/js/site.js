@@ -8,7 +8,7 @@ $(document).ready(function () {
 $(".uppercase").keyup(function () {
     var text = $(this).val();
     $(this).val(text.toUpperCase());
-});0
+}); 0
 
 function clearErrors() {
     $(".validation-summary-errors").empty();
@@ -134,8 +134,8 @@ function updateSpeed(cars) {
         setTimeout(timerJob2, interval);
         return;
     }
-    const delta = Math.round(selectedCar.speed / 10);
-    selectedCar.speed = selectedCar.speed + delta / 2 - Math.floor(Math.random() * delta);
+    const delta = selectedCar.speed / 10;
+    selectedCar.speed = selectedCar.speed + Math.round(delta / 2 - Math.floor(Math.random() * delta));
     $.ajax({
         url: 'http://localhost:63484/api/write/car/speed/' + selectedCar.carId,
         contentType: "application/json",
