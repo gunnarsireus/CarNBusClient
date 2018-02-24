@@ -29,6 +29,7 @@ namespace CarNBusClient.Controllers
             string carVIN = "";
             bool carOnline = false;
             string carCreationTime = ";";
+            int carSpeed = 0;
             Guid pendingId = Guid.Empty;
             if (id != null && id.IndexOf("pending", StringComparison.Ordinal) != -1)
             {
@@ -40,7 +41,7 @@ namespace CarNBusClient.Controllers
                         pending = tokens[1].Remove(0, 8);
                         pendingId = Guid.Parse(tokens[2]);
                         break;
-                    case 7:
+                    case 8:
                         id = tokens[0];
                         pending = tokens[1].Remove(0, 8);
                         pendingId = Guid.Parse(tokens[2]);
@@ -48,6 +49,7 @@ namespace CarNBusClient.Controllers
                         carVIN = tokens[4];
                         carOnline = bool.Parse(tokens[5]);
                         carCreationTime = tokens[6];
+                        carSpeed = int.Parse(tokens[7]);
                         break;
                 }
             }
@@ -92,10 +94,12 @@ namespace CarNBusClient.Controllers
                             carListViewModel.Cars.Add(new Car(Guid.Parse(id))
                             {
                                 Pending = "Create",
+                                CarId = pendingId,
                                 RegNr = carRegNr,
                                 VIN = carVIN,
                                 CreationTime = carCreationTime,
-                                Online = carOnline
+                                Online = carOnline,
+                                Speed = carSpeed
                             });
                         }
 
@@ -107,6 +111,7 @@ namespace CarNBusClient.Controllers
                             {
                                 car.Pending = "Update";
                                 car.Online = carOnline;
+                                car.Speed = carSpeed;
                                 break;
                             }
                         }
@@ -175,14 +180,13 @@ namespace CarNBusClient.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
-            [Bind("CompanyId,VIN,RegNr,Online")] Car car)
+        public async Task<IActionResult> Create([Bind("CompanyId,VIN,RegNr,Online,Speed")] Car car)
         {
             if (!ModelState.IsValid) return View(car);
             car.CarId = Guid.NewGuid();
             await Utils.Post<Car>("api/write/Car/", car);
 
-            return RedirectToAction("Index", new { id = car.CompanyId + ",pending create," + car.CarId + "," + car.RegNr + "," + car.VIN + "," + car.Online + "," + car.CreationTime });
+            return RedirectToAction("Index", new { id = car.CompanyId + ",pending create," + car.CarId + "," + car.RegNr + "," + car.VIN + "," + car.Online + "," + car.CreationTime + "," + car.Speed });
         }
 
         // GET: Car/Edit/5
@@ -191,7 +195,7 @@ namespace CarNBusClient.Controllers
             var car = await Utils.Get<Car>("api/read/Car/" + id);
             if (car.Locked)
             {
-                return RedirectToAction("Index", new { id = car.CompanyId + ",pending edit," + car.CarId + "," + car.RegNr + "," + car.VIN + "," + car.Online + "," + car.CreationTime });
+                return RedirectToAction("Index", new { id = car.CompanyId + ",pending edit," + car.CarId + "," + car.RegNr + "," + car.VIN + "," + car.Online + "," + car.CreationTime + "," + car.Speed });
             }
             car.Locked = true; //Prevent updates of Online/Offline while editing
             await Utils.Put<Car>("api/write/car/locked/" + id, car);
@@ -211,9 +215,9 @@ namespace CarNBusClient.Controllers
         {
             if (!ModelState.IsValid) return View(car);
             var oldCar = await Utils.Get<Car>("api/read/Car/" + car.CarId);
-            if (!oldCar.Locked || oldCar.Speed!=car.OldSpeed || oldCar.Online!= car.OldOnline)
+            if (!oldCar.Locked || oldCar.Speed != car.OldSpeed || oldCar.Online != car.OldOnline)
             {
-                return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending timeout," + oldCar.CarId + "," + oldCar.RegNr + "," + oldCar.VIN + "," + car.Online + "," + oldCar.CreationTime });
+                return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending timeout," + oldCar.CarId + "," + oldCar.RegNr + "," + oldCar.VIN + "," + car.Online + "," + oldCar.CreationTime + "," + car.Speed });
             }
             oldCar.Online = car.Online;
             await Utils.Put<Car>("api/write/Car/online/" + oldCar.CarId, oldCar);
@@ -221,7 +225,7 @@ namespace CarNBusClient.Controllers
             await Utils.Put<Car>("api/write/Car/speed/" + oldCar.CarId, oldCar);
             oldCar.Locked = false; //Enable updates of Online/Offline when editing done
             await Utils.Put<Car>("api/write/Car/locked/" + oldCar.CarId, oldCar);
-            return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending update," + oldCar.CarId + "," + oldCar.RegNr + "," + oldCar.VIN + "," + oldCar.Online + "," + oldCar.CreationTime });
+            return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending update," + car.CarId + "," + car.RegNr + "," + car.VIN + "," + car.Online + "," + car.CreationTime + "," + car.Speed });
         }
 
         // GET: Car/Delete/5
@@ -230,7 +234,7 @@ namespace CarNBusClient.Controllers
             var car = await Utils.Get<Car>("api/read/Car/" + id);
             if (car.Locked)
             {
-                return RedirectToAction("Index", new { id = car.CompanyId + ",pending edit," + car.CarId + "," + car.RegNr + "," + car.VIN + "," + car.Online + "," + car.CreationTime });
+                return RedirectToAction("Index", new { id = car.CompanyId + ",pending edit," + car.CarId + "," + car.RegNr + "," + car.VIN + "," + car.Online + "," + car.CreationTime + "," + car.Speed });
             }
             car.Locked = true; //Prevent updates of Online/Offline while editing
             await Utils.Put<Car>("api/write/car/locked/" + id, car);
@@ -246,7 +250,7 @@ namespace CarNBusClient.Controllers
             var oldCar = await Utils.Get<Car>("api/read/Car/" + id);
             if (!oldCar.Locked)
             {
-                return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending timeout," + oldCar.CarId + "," + oldCar.RegNr + "," + oldCar.VIN + "," + oldCar.Online + "," + oldCar.CreationTime });
+                return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending timeout," + oldCar.CarId + "," + oldCar.RegNr + "," + oldCar.VIN + "," + oldCar.Online + "," + oldCar.CreationTime + "," + oldCar.Speed });
             }
             await Utils.Delete<Car>("api/write/Car/" + id);
             return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending delete," + id });
