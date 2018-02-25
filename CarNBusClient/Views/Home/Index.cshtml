@@ -78,12 +78,15 @@
     </div>
     <div class="col-lg-2">
         <h3>Show vehicles with status:</h3>
-        <input onclick="doFiltering()"  id="All"  type="radio" name="status" value="All"  checked="checked">All<br>
+        <input onclick="doFiltering()" id="All" type="radio" name="status" value="All" checked="checked">All<br>
         <input onclick="doFiltering()" id="Online" type="radio" name="status" value="Online">Online<br>
         <input onclick="doFiltering()" id="Offline" type="radio" name="status" value="Offline">Offline<br>
         <br>
         <br>
         <button onclick="showModals()">Show message queues</button>
+        <br>
+        <br>
+        <button onclick="show2ndView()">2:nd view</button>
     </div>
     <div class="col-lg-4">
         <p class="alert-info">All vehicles for all companies are shown here. Status (Offline/Online) randomly changes approximately every 10 seconds. A logged in user can manually change the status. To view and update vehicles and companies, create an account, log in and select the respective menu options. 

@@ -14,8 +14,8 @@ function clearErrors() {
     $(".validation-summary-errors").empty();
 };
 
-let longInterval = 100000;
-let longInterval2 = 100000;
+let longInterval = 1000;
+let longInterval2 = 100;
 let numberOfCars = 7;
 const oneSecond = 1000;
 
@@ -30,7 +30,7 @@ function timerJob() {
         if (xmlhttp.readyState === XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
             if (xmlhttp.status === 200) {
                 let cars = JSON.parse(xmlhttp.responseText);
-                updateOnline(cars);
+                updateOnlineOverdrive(cars);
             }
             else if (xmlhttp.status === 400) {
                 alert('There was an error 400');
@@ -51,7 +51,7 @@ function timerJob2() {
         if (xmlhttp.readyState === XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
             if (xmlhttp.status === 200) {
                 let cars = JSON.parse(xmlhttp.responseText);
-                updateSpeed(cars);
+                updateSpeedOverdrive(cars);
             }
             else if (xmlhttp.status === 400) {
                 alert('There was an error 400');
@@ -66,7 +66,7 @@ function timerJob2() {
     xmlhttp.send();
 }
 
-function updateOnline(cars) {
+function updateOnlineOverdrive(cars) {
     if (cars.length === 0) {
         setTimeout(timerJob, oneSecond);
         console.log("No vehicles found!");
@@ -119,7 +119,7 @@ function updateOnline(cars) {
     setTimeout(timerJob, interval);
 }
 
-function updateSpeed(cars) {
+function updateSpeedOverdrive(cars) {
     if (cars.length === 0) {
         setTimeout(timerJob2, oneSecond);
         console.log("No vehicles found!");
@@ -193,4 +193,7 @@ function doFiltering() {
 
 function showModals() {
     window.open("./html/Car.html", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=50,left=50,width=500,height=400");
+}
+function show2ndView() {
+    window.open("./html/SecondView.html", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=50,left=50,width=500,height=400");
 }
