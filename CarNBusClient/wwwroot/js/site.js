@@ -14,8 +14,8 @@ function clearErrors() {
     $(".validation-summary-errors").empty();
 };
 
-let longInterval = 1000;
-let longInterval2 = 100;
+let longInterval = 100000;
+let longInterval2 = 100000;
 let numberOfCars = 7;
 const oneSecond = 1000;
 
