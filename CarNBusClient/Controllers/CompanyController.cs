@@ -145,14 +145,15 @@ namespace CarNBusClient.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,CreationTime, Name, Address")] Company company)
+        public async Task<IActionResult> Edit(Guid companyId, [Bind("Id,CreationTime, Name, Address")] Company company)
         {
             if (!ModelState.IsValid) return View(company);
-            var oldCompany = await Utils.Get<Company>("api/Company/" + id);
+            var oldCompany = await Utils.Get<Company>("api/Company/" + companyId);
 
             oldCompany.Name = company.Name;
+            await Utils.Put<Company>("api/Company/name/" + oldCompany.CompanyId, oldCompany);
             oldCompany.Address = company.Address;
-            await Utils.Put<Company>("api/Company/" + oldCompany.CompanyId, oldCompany);
+            await Utils.Put<Company>("api/Company/address/" + oldCompany.CompanyId, oldCompany);
 
             return RedirectToAction("Index", new { id = oldCompany.CompanyId + "|pending update" + "|" + company.Name + "|" + company.Address});
         }
