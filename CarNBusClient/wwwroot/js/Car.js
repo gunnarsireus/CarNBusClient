@@ -1,29 +1,29 @@
 ﻿$(document).ready(function () {
-    $.getJSON("../apiAddress.json", function (data) {
-        var items = [];
-        $.each(data, function (key, val) {
-            items.push("<li id='" + key + "'>" + val + "</li>");
-        });
-
-        $("<ul/>", {"id":"apiAddress",
-            "style": "display:none;hidden",
-            html: items.join("")
-        }).appendTo("body");
-    });
-    console.log('Car.js loaded');
+    console.log('Car.js loaded ');
 });
+
+let apiAddress = '';
+
+var xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function () {
+    if (xmlhttp.readyState === XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+        if (xmlhttp.status === 200) {
+            apiAddress = JSON.parse(xmlhttp.responseText).apiAddress;
+            console.log('apiAddress : ' + apiAddress);
+        }
+        else if (xmlhttp.status === 400) {
+            alert('There was an error 400');
+        }
+        else {
+            alert('something else other than 200 was returned');
+        }
+    }
+};
+xmlhttp.open("GET", "../apiAddress.json", true);
+xmlhttp.send();
 
 const oneSecond = 1000;
 (function () {
-    //const length = getParameterByName('length');
-    //for (var i = 0; i < length; i++) {
-    //    let car = {
-    //        regNr: getParameterByName('regNr' + i),
-    //        2: getParameterByName('online' + i)
-    //    };
-    //    carArr.push(car);
-    //}
-    //createTable(carArr);
     window.setTimeout(getCars, oneSecond);
 })();
 
@@ -59,16 +59,6 @@ function createTable(cars) {
     }
 }
 
-//function getParameterByName(name, url) {
-//    if (!url) url = window.location.href;
-//    name = name.replace(/[\[\]]/g, "\\$&");
-//    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-//        results = regex.exec(url);
-//    if (!results) return null;
-//    if (!results[2]) return '';
-//    return decodeURIComponent(results[2].replace(/\+/g, " "));
-//}
-
 
 function getCars() {
     var xmlhttp = new XMLHttpRequest();
@@ -88,6 +78,8 @@ function getCars() {
         }
     };
 
-    xmlhttp.open("GET", "http://localhost:63484/api/read/car", true);
-    xmlhttp.send();
+    if (apiAddress !== '') {
+        xmlhttp.open("GET", apiAddress + "/api/read/car", true);
+        xmlhttp.send();
+    }
 }

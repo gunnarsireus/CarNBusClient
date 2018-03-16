@@ -1,22 +1,29 @@
-﻿// Write your JavaScript code.
-$(document).ready(function () {
-    updateOnlineTimer();
-    updateSpeedTimer();
-    $.getJSON("../apiAddress.json", function (data) {
-        var items = [];
-        $.each(data, function (key, val) {
-            items.push("<li id='" + key + "'>" + val + "</li>");
-        });
-
-        $("<ul/>", {
-            "id": "apiAddress",
-            "style": "display:none;hidden",
-            html: items.join("")
-        }).appendTo("body");
-    });
+﻿$(document).ready(function () {
     console.log('Overdrive.js loaded');
 });
 
+let apiAddress = '';
+
+var xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function () {
+    if (xmlhttp.readyState === XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+        if (xmlhttp.status === 200) {
+            apiAddress = JSON.parse(xmlhttp.responseText).apiAddress;
+            document.getElementById("infoText").innerHTML = "apiAddress: " + apiAddress
+            console.log('apiAddress : ' + apiAddress);
+            updateOnlineTimer();
+            updateSpeedTimer();
+        }
+        else if (xmlhttp.status === 400) {
+            alert('There was an error 400');
+        }
+        else {
+            alert('something else other than 200 was returned');
+        }
+    }
+};
+xmlhttp.open("GET", "../apiAddress.json", true);
+xmlhttp.send();
 
 let overdriveInterval = 10;
 let overdriveInterval2 = 5;
@@ -44,9 +51,10 @@ function updateOnlineTimer() {
             }
         }
     };
-
-    xmlhttp.open("GET", "http://localhost:63484/api/read/car", true);
-    xmlhttp.send();
+    if (apiAddress !== '') {
+        xmlhttp.open("GET", apiAddress + "/api/read/car", true);
+        xmlhttp.send();
+    }
 }
 
 function updateSpeedTimer() {
@@ -65,12 +73,18 @@ function updateSpeedTimer() {
             }
         }
     };
-
-    xmlhttp.open("GET", "http://localhost:63484/api/read/car", true);
-    xmlhttp.send();
+    if (apiAddress !== '') {
+        xmlhttp.open("GET", apiAddress + "/api/read/car", true);
+        xmlhttp.send();
+    }
 }
 
 function updateOnlineOverdrive(cars) {
+    if (apiAddress === '') {
+        setTimeout(updateOnlineTimer, oneSecond);
+        console.log("No apiAddress found");
+        return;
+    }
     if (cars.length === 0) {
         setTimeout(updateOnlineTimer, oneSecond);
         console.log("No vehicles found!");
@@ -87,18 +101,24 @@ function updateOnlineOverdrive(cars) {
     }
     selectedCar.online = !selectedCar.online;
     $.ajax({
-        url: 'http://localhost:63484/api/write/car/online/' + selectedCar.carId,
+        url: apiAddress + '/api/write/car/online/' + selectedCar.carId,
         contentType: "application/json",
         type: "PUT",
         data: JSON.stringify(selectedCar),
         dataType: "json"
     });
-
+    var onlineStr = (selectedCar.online) ? 'online' : 'offline';
+    document.getElementById("infoText").innerHTML = 'Car ' + selectedCar.regNr + ' is ' + onlineStr;
     let interval = Math.round(overdriveInterval / numberOfCars);
     setTimeout(updateOnlineTimer, interval);
 }
 
 function updateSpeedOverdrive(cars) {
+    if (apiAddress === '') {
+        setTimeout(updateSpeedTimer, oneSecond);
+        console.log("No apiAddress found");
+        return;
+    }
     if (cars.length === 0) {
         setTimeout(updateSpeedTimer, oneSecond);
         console.log("No vehicles found!");
@@ -116,13 +136,13 @@ function updateSpeedOverdrive(cars) {
     const delta = selectedCar.speed / 10;
     selectedCar.speed = selectedCar.speed + Math.round(delta / 2 - Math.floor(Math.random() * delta));
     $.ajax({
-        url: 'http://localhost:63484/api/write/car/speed/' + selectedCar.carId,
+        url: apiAddress + '/api/write/car/speed/' + selectedCar.carId,
         contentType: "application/json",
         type: "PUT",
         data: JSON.stringify(selectedCar),
         dataType: "json"
     });
-
+    document.getElementById("infoText").innerHTML = 'Car ' + selectedCar.regNr + ' has speed ' + selectedCar.speed/10 + ' km/h';
     overdriveInterval2 = Math.round(overdriveInterval2 / numberOfCars);
     setTimeout(updateSpeedTimer, overdriveInterval2);
 }
