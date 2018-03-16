@@ -2,7 +2,19 @@
 $(document).ready(function () {
     updateOnlineTimer();
     updateSpeedTimer();
-    console.log('documentReady Overdrive');
+    $.getJSON("../apiAddress.json", function (data) {
+        var items = [];
+        $.each(data, function (key, val) {
+            items.push("<li id='" + key + "'>" + val + "</li>");
+        });
+
+        $("<ul/>", {
+            "id": "apiAddress",
+            "style": "display:none;hidden",
+            html: items.join("")
+        }).appendTo("body");
+    });
+    console.log('Overdrive.js loaded');
 });
 
 
