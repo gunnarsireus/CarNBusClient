@@ -18,6 +18,7 @@ let longInterval = 100000;
 let longInterval2 = 100000;
 let numberOfCars = 7;
 const oneSecond = 1000;
+let windowStep = 0;
 
 function convertSpeed(s) {
     return Math.round(s / 10) + "," + Math.round(s % 10);
@@ -192,8 +193,14 @@ function doFiltering() {
 };
 
 function showModals() {
-    window.open("./html/Car.html", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=50,left=50,width=500,height=400");
+    let top = 50 + windowStep;
+    let left = 50 + windowStep;
+    windowStep = windowStep + 20;
+    window.open("./html/Car.html", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=" + top + ",left=" + left + ",width=500,height=400");
 }
 function show2ndView() {
-    window.open("./html/SecondView.html", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=50,left=50,width=500,height=400");
+    let top = 50 + windowStep;
+    let left = 50 + windowStep;
+    windowStep = windowStep + 20;
+    window.open("./html/SecondView.html", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=" + top + ",left=" + left + ",width=500,height=100");
 }
