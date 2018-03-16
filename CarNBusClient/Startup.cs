@@ -52,9 +52,10 @@ namespace CarNBusClient
 			}
 			if (aspNetDb != null)
 			{
-				services.AddDbContext<ApplicationDbContext>(options =>
-					options.UseSqlite("Data Source=" + aspNetDb));
-			}
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlServer(aspNetDb));
+
+            }
 			else
 			{
 				services.AddDbContext<ApplicationDbContext>(options =>
