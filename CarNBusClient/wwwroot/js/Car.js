@@ -2,26 +2,6 @@
     console.log('Car.js loaded ');
 });
 
-let apiAddress = '';
-
-var xmlhttp = new XMLHttpRequest();
-xmlhttp.onreadystatechange = function () {
-    if (xmlhttp.readyState === XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
-        if (xmlhttp.status === 200) {
-            apiAddress = JSON.parse(xmlhttp.responseText).apiAddress;
-            console.log('apiAddress : ' + apiAddress);
-        }
-        else if (xmlhttp.status === 400) {
-            alert('There was an error 400');
-        }
-        else {
-            alert('something else other than 200 was returned');
-        }
-    }
-};
-xmlhttp.open("GET", "../apiAddress.json", true);
-xmlhttp.send();
-
 const oneSecond = 1000;
 (function () {
     window.setTimeout(getCars, oneSecond);
@@ -73,13 +53,13 @@ function getCars() {
                 alert('There was an error 400');
             }
             else {
-                alert('something else other than 200 was returned');
+                //alert('something else other than 200 was returned');
             }
         }
     };
 
-    if (apiAddress !== '') {
-        xmlhttp.open("GET", apiAddress + "/api/read/car", true);
+    if (localStorage.getItem("apiAddress") !== null) {
+        xmlhttp.open("GET", localStorage.getItem("apiAddress")  + "/api/read/car", true);
         xmlhttp.send();
     }
 }

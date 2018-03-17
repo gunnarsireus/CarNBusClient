@@ -39,41 +39,41 @@
                     {
                         if (j == 0)
                         {
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => cars[j].VIN)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => cars[j].RegNr)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => cars[j].ConvertSpeed)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => cars[j].Online)
-                        </th>
-                    </tr>
-}
-                    <tr id="@cars[j].CarId">
-                        <td>
-                            @Html.DisplayFor(model => cars[j].VIN)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(model => cars[j].RegNr)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(model => cars[j].ConvertSpeed)
-                        </td>
-                        @{ var cl = cars[j].Online ? "" : "alert-danger";}
-                        <td class="@cl">
-                            @Html.DisplayFor(model => cars[j].OnlineOrOffline)
-                        </td>
-                    </tr> if (j == cars.Count - 1)
-                                {
-                                    <tr><td colspan="3"></td></tr>}
-                                }
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => cars[j].VIN)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => cars[j].RegNr)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => cars[j].ConvertSpeed)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => cars[j].Online)
+                                </th>
+                            </tr>
+                        }
+                        <tr id="@cars[j].CarId">
+                            <td>
+                                @Html.DisplayFor(model => cars[j].VIN)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => cars[j].RegNr)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => cars[j].ConvertSpeed)
+                            </td>
+                            @{ var cl = cars[j].Online ? "" : "alert-danger";}
+                            <td class="@cl">
+                                @Html.DisplayFor(model => cars[j].OnlineOrOffline)
+                            </td>
+                        </tr> if (j == cars.Count - 1)
+                        {
+                            <tr><td colspan="3"></td></tr>}
+                    }
 
-                </tbody>      }
+                </tbody>}
         </table>
     </div>
     <div class="col-lg-2">
@@ -87,11 +87,21 @@
         <br>
         <br>
         <button onclick="show2ndView()">Automation Overdrive</button>
+        @inject SignInManager<ApplicationUser> SignInManager
+        @inject UserManager<ApplicationUser> UserManager
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <br>
+            <br>
+            <button onclick="clearDatabase()">Clear database</button>
+        }
     </div>
     <div class="col-lg-4">
-        <p class="alert-info">All vehicles for all companies are shown here. Status (Offline/Online) randomly changes approximately every 10 seconds. A logged in user can manually change the status. To view and update vehicles and companies, create an account, log in and select the respective menu options. 
-            <br/><br/>
-            If you press F12 and select "Console" you can see when the status changes for each car using Javascript in the browser.</p>
+        <p class="alert-info">
+            All vehicles for all companies are shown here. Status (Offline/Online) randomly changes approximately every 10 seconds. A logged in user can manually change the status. To view and update vehicles and companies, create an account, log in and select the respective menu options.
+            <br /><br />
+            If you press F12 and select "Console" you can see when the status changes for each car using Javascript in the browser.
+        </p>
     </div>
     <div class="col-lg-2">
     </div>

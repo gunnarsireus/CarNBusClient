@@ -1,9 +1,16 @@
-﻿// Write your JavaScript code.
-$(document).ready(function () {
-    timerJob();
-    timerJob2();
+﻿$(document).ready(function () {
+    if ((localStorage.getItem("apiAddress") === null && document.getElementById('apiAddress') !== null) || (localStorage.getItem("apiAddress") != document.getElementById('apiAddress'))) {
+        localStorage.setItem('apiAddress', document.getElementById('apiAddress').innerHTML);
+        alert(localStorage.getItem("apiAddress"));
+    }
     console.log('documentReady');
 });
+
+
+if (localStorage.getItem("apiAddress") !== null) {
+    timerJob();
+    timerJob2();
+}
 
 $(".uppercase").keyup(function () {
     var text = $(this).val();
@@ -41,9 +48,10 @@ function timerJob() {
             }
         }
     };
-
-    xmlhttp.open("GET", "http://localhost:63484/api/read/car", true);
-    xmlhttp.send();
+    if (localStorage.getItem("apiAddress") !== null) {
+        xmlhttp.open("GET", localStorage.getItem("apiAddress") + "/api/read/car", true);
+        xmlhttp.send();
+    }
 }
 
 function timerJob2() {
@@ -63,8 +71,10 @@ function timerJob2() {
         }
     };
 
-    xmlhttp.open("GET", "http://localhost:63484/api/read/car", true);
-    xmlhttp.send();
+    if (localStorage.getItem("apiAddress") !== null) {
+        xmlhttp.open("GET", localStorage.getItem("apiAddress") + "/api/read/car", true);
+        xmlhttp.send();
+    }
 }
 
 function updateOnlineOverdrive(cars) {
@@ -84,7 +94,7 @@ function updateOnlineOverdrive(cars) {
     }
     selectedCar.online = !selectedCar.online;
     $.ajax({
-        url: 'http://localhost:63484/api/write/car/online/' + selectedCar.carId,
+        url: localStorage.getItem("apiAddress") + '/api/write/car/online/' + selectedCar.carId,
         contentType: "application/json",
         type: "PUT",
         data: JSON.stringify(selectedCar),
@@ -138,7 +148,7 @@ function updateSpeedOverdrive(cars) {
     const delta = selectedCar.speed / 10;
     selectedCar.speed = selectedCar.speed + Math.round(delta / 2 - Math.floor(Math.random() * delta));
     $.ajax({
-        url: 'http://localhost:63484/api/write/car/speed/' + selectedCar.carId,
+        url: localStorage.getItem("apiAddress") + '/api/write/car/speed/' + selectedCar.carId,
         contentType: "application/json",
         type: "PUT",
         data: JSON.stringify(selectedCar),
@@ -203,4 +213,11 @@ function show2ndView() {
     let left = 50 + windowStep;
     windowStep = windowStep + 20;
     window.open("./html/SecondView.html", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=" + top + ",left=" + left + ",width=500,height=100");
+}
+function clearDatabase() {
+    if (localStorage.getItem("apiAddress") !== null) {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("POST", localStorage.getItem("apiAddress") + "/api/aspnetdb/clear", true);
+        xmlhttp.send();
+    }
 }

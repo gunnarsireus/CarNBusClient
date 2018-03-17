@@ -13,7 +13,9 @@ namespace CarNBusClient.Controllers
 	{
 		public async Task<IActionResult> Index()
 		{
-			List<Company> companies;
+            ViewBag.ApiAddress = Startup.ApiAddress.AbsoluteUri;
+
+            List<Company> companies;
 			try
 			{
 				companies = await Utils.Get<List<Company>>("api/Company");

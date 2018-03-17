@@ -1,18 +1,18 @@
 ﻿using System;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CarNBusClient
 {
 	public static class Utils
 	{
-		private static readonly Uri Endpoint = new Uri("http://localhost:63484//");
-
 		public static async Task<T> Get<T>(string url)
 		{
-			using (var client = new HttpClient { BaseAddress = Endpoint })
+			using (var client = new HttpClient { BaseAddress = Startup.ApiAddress })
 			{
 				client.DefaultRequestHeaders.Accept.Clear();
 				client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -25,8 +25,8 @@ namespace CarNBusClient
 		// INSERT
 		public static async Task<T> Post<T>(string url, object data)
 		{
-			using (var client = new HttpClient { BaseAddress = Endpoint })
-			{
+            using (var client = new HttpClient { BaseAddress = Startup.ApiAddress })
+            {
 				client.DefaultRequestHeaders.Accept.Clear();
 				client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 				var httpContent = new StringContent(JsonConvert.SerializeObject(data));
@@ -41,8 +41,8 @@ namespace CarNBusClient
 		// UPDATE
 		public static async Task<T> Put<T>(string url, object data)
 		{
-			using (var client = new HttpClient { BaseAddress = Endpoint })
-			{
+            using (var client = new HttpClient { BaseAddress = Startup.ApiAddress })
+            {
 				client.DefaultRequestHeaders.Accept.Clear();
 				client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 				var httpContent = new StringContent(JsonConvert.SerializeObject(data));
@@ -58,8 +58,8 @@ namespace CarNBusClient
 
 		public static async Task<T> Delete<T>(string url)
 		{
-			using (var client = new HttpClient { BaseAddress = Endpoint })
-			{
+            using (var client = new HttpClient { BaseAddress = Startup.ApiAddress })
+            {
 				client.DefaultRequestHeaders.Accept.Clear();
 				client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 				var response = await client.DeleteAsync(url);

@@ -1,29 +1,9 @@
 ﻿$(document).ready(function () {
+    updateOnlineTimer();
+    updateSpeedTimer();
     console.log('Overdrive.js loaded');
 });
 
-let apiAddress = '';
-
-var xmlhttp = new XMLHttpRequest();
-xmlhttp.onreadystatechange = function () {
-    if (xmlhttp.readyState === XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
-        if (xmlhttp.status === 200) {
-            apiAddress = JSON.parse(xmlhttp.responseText).apiAddress;
-            document.getElementById("infoText").innerHTML = "apiAddress: " + apiAddress
-            console.log('apiAddress : ' + apiAddress);
-            updateOnlineTimer();
-            updateSpeedTimer();
-        }
-        else if (xmlhttp.status === 400) {
-            alert('There was an error 400');
-        }
-        else {
-            alert('something else other than 200 was returned');
-        }
-    }
-};
-xmlhttp.open("GET", "../apiAddress.json", true);
-xmlhttp.send();
 
 let overdriveInterval = 10;
 let overdriveInterval2 = 5;
@@ -33,7 +13,6 @@ const oneSecond = 1000;
 function convertSpeed(s) {
     return Math.round(s / 10) + "," + Math.round(s % 10);
 }
-
 
 function updateOnlineTimer() {
     var xmlhttp = new XMLHttpRequest();
@@ -51,8 +30,8 @@ function updateOnlineTimer() {
             }
         }
     };
-    if (apiAddress !== '') {
-        xmlhttp.open("GET", apiAddress + "/api/read/car", true);
+    if (localStorage.getItem("apiAddress") !== null) {
+        xmlhttp.open("GET", localStorage.getItem("apiAddress")  + "/api/read/car", true);
         xmlhttp.send();
     }
 }
@@ -73,14 +52,14 @@ function updateSpeedTimer() {
             }
         }
     };
-    if (apiAddress !== '') {
-        xmlhttp.open("GET", apiAddress + "/api/read/car", true);
+    if (localStorage.getItem("apiAddress") !== null) {
+        xmlhttp.open("GET", localStorage.getItem("apiAddress")  + "/api/read/car", true);
         xmlhttp.send();
     }
 }
 
 function updateOnlineOverdrive(cars) {
-    if (apiAddress === '') {
+    if (localStorage.getItem("apiAddress") === null) {
         setTimeout(updateOnlineTimer, oneSecond);
         console.log("No apiAddress found");
         return;
@@ -101,7 +80,7 @@ function updateOnlineOverdrive(cars) {
     }
     selectedCar.online = !selectedCar.online;
     $.ajax({
-        url: apiAddress + '/api/write/car/online/' + selectedCar.carId,
+        url: localStorage.getItem("apiAddress")  + '/api/write/car/online/' + selectedCar.carId,
         contentType: "application/json",
         type: "PUT",
         data: JSON.stringify(selectedCar),
@@ -114,7 +93,7 @@ function updateOnlineOverdrive(cars) {
 }
 
 function updateSpeedOverdrive(cars) {
-    if (apiAddress === '') {
+    if (localStorage.getItem("apiAddress") === null) {
         setTimeout(updateSpeedTimer, oneSecond);
         console.log("No apiAddress found");
         return;
@@ -136,7 +115,7 @@ function updateSpeedOverdrive(cars) {
     const delta = selectedCar.speed / 10;
     selectedCar.speed = selectedCar.speed + Math.round(delta / 2 - Math.floor(Math.random() * delta));
     $.ajax({
-        url: apiAddress + '/api/write/car/speed/' + selectedCar.carId,
+        url: localStorage.getItem("apiAddress")  + '/api/write/car/speed/' + selectedCar.carId,
         contentType: "application/json",
         type: "PUT",
         data: JSON.stringify(selectedCar),

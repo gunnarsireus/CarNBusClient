@@ -15,10 +15,12 @@ namespace CarNBusClient
 {
 	public class Startup
 	{
+        public static Uri ApiAddress = null;
 		public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
-		}
+            ApiAddress = new Uri(Configuration.GetSection("ConnectionStrings:ApiAddress").Get<string>());
+        }
 
 		public IConfiguration Configuration { get; }
 
