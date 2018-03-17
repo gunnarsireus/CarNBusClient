@@ -1,7 +1,8 @@
 ﻿$(document).ready(function () {
-    if ((localStorage.getItem("apiAddress") === null && document.getElementById('apiAddress') !== null) || (localStorage.getItem("apiAddress") != document.getElementById('apiAddress'))) {
-        localStorage.setItem('apiAddress', document.getElementById('apiAddress').innerHTML);
-        alert(localStorage.getItem("apiAddress"));
+    if (document.getElementById('apiAddress').innerHTML !== null) {
+        if (localStorage.getItem("apiAddress") === null || (localStorage.getItem("apiAddress") !== document.getElementById('apiAddress').innerHTML)) {
+            localStorage.setItem('apiAddress', document.getElementById('apiAddress').innerHTML);
+        }
     }
     console.log('documentReady');
 });
