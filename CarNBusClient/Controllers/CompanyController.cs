@@ -6,16 +6,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using CarNBusClient.Models;
 using CarNBusClient.Models.CompanyViewModel;
+using Microsoft.AspNetCore.Http;
 
 namespace CarNBusClient.Controllers
 {
     public class CompanyController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CompanyController(SignInManager<ApplicationUser> signInManager)
+        public CompanyController(SignInManager<ApplicationUser> signInManager, IHttpContextAccessor httpContextAccessor)
         {
             _signInManager = signInManager;
+            _httpContextAccessor = httpContextAccessor;
         }
 
 
@@ -24,7 +27,7 @@ namespace CarNBusClient.Controllers
         public async Task<IActionResult> Index(string id)
         {
             if (!_signInManager.IsSignedIn(User)) return RedirectToAction("Index", "Home");
-            var companies = await Utils.Get<List<Company>>("api/Company");
+            var companies = await Utils.Get<List<Company>>("api/Company", _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
 
             string pending = "";
             string companyCreationTime = "";
@@ -52,7 +55,7 @@ namespace CarNBusClient.Controllers
                 }
             }
 
-            var allCars = await Utils.Get<List<Car>>("api/read/car");
+            var allCars = await Utils.Get<List<Car>>("api/read/car", _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
             foreach (var company in companies)
             {
 
@@ -108,7 +111,7 @@ namespace CarNBusClient.Controllers
         // GET: Company/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
-            var company = await Utils.Get<Company>("api/Company/" + id);
+            var company = await Utils.Get<Company>("api/Company/" + id, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
 
             return View(company);
         }
@@ -128,7 +131,7 @@ namespace CarNBusClient.Controllers
         {
             if (!ModelState.IsValid) return View(company);
             company.CompanyId = Guid.NewGuid();
-            await Utils.Post<Company>("api/Company/", company);
+            await Utils.Post<Company>("api/Company/", company, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
 
             return RedirectToAction("Index", new { id = company.CompanyId + "|pending create" + "|" + company.Name + "|" + company.Address });
         }
@@ -136,7 +139,7 @@ namespace CarNBusClient.Controllers
         // GET: Company/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
-            var company = await Utils.Get<Company>("api/Company/" + id);
+            var company = await Utils.Get<Company>("api/Company/" + id, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
             return View(company);
         }
 
@@ -148,20 +151,20 @@ namespace CarNBusClient.Controllers
         public async Task<IActionResult> Edit(Guid companyId, [Bind("Id,CreationTime, Name, Address")] Company company)
         {
             if (!ModelState.IsValid) return View(company);
-            var oldCompany = await Utils.Get<Company>("api/Company/" + companyId);
+            var oldCompany = await Utils.Get<Company>("api/Company/" + companyId, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
 
             oldCompany.Name = company.Name;
-            await Utils.Put<Company>("api/Company/name/" + oldCompany.CompanyId, oldCompany);
+            await Utils.Put<Company>("api/Company/name/" + oldCompany.CompanyId, oldCompany, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
             oldCompany.Address = company.Address;
-            await Utils.Put<Company>("api/Company/address/" + oldCompany.CompanyId, oldCompany);
+            await Utils.Put<Company>("api/Company/address/" + oldCompany.CompanyId, oldCompany, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
 
-            return RedirectToAction("Index", new { id = oldCompany.CompanyId + "|pending update" + "|" + company.Name + "|" + company.Address});
+            return RedirectToAction("Index", new { id = oldCompany.CompanyId + "|pending update" + "|" + company.Name + "|" + company.Address });
         }
 
         // GET: Company/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
-            var company = await Utils.Get<Company>("api/Company/" + id);
+            var company = await Utils.Get<Company>("api/Company/" + id, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
             return View(company);
         }
 
@@ -171,13 +174,13 @@ namespace CarNBusClient.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            await Utils.Delete<Company>("api/Company/" + id);
+            await Utils.Delete<Company>("api/Company/" + id, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
             return RedirectToAction("Index", new { id = id + "|pending delete" });
         }
 
         private async Task<bool> CompanyExists(Guid id)
         {
-            var companies = await Utils.Get<List<Company>>("api/Company");
+            var companies = await Utils.Get<List<Company>>("api/Company", _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
             return companies.Any(e => e.CompanyId == id);
         }
     }

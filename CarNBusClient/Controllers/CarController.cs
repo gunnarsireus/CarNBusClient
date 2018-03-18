@@ -7,23 +7,26 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using CarNBusClient.Models;
 using CarNBusClient.Models.CarViewModel;
+using Microsoft.AspNetCore.Http;
 
 namespace CarNBusClient.Controllers
 {
     public class CarController : Controller
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CarController(SignInManager<ApplicationUser> signInManager)
+        public CarController(SignInManager<ApplicationUser> signInManager, IHttpContextAccessor httpContextAccessor)
         {
             _signInManager = signInManager;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: Car
         public async Task<IActionResult> Index(string id)
         {
             if (!_signInManager.IsSignedIn(User)) return RedirectToAction("Index", "Home");
-            var companies = await Utils.Get<List<Company>>("api/Company");
+            var companies = await Utils.Get<List<Company>>("api/Company", _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
             string pending = "";
             string carRegNr = "";
             string carVIN = "";
@@ -74,7 +77,7 @@ namespace CarNBusClient.Controllers
 
             if (id != null)
             {
-                cars = await Utils.Get<List<Car>>("api/read/Car");
+                cars = await Utils.Get<List<Car>>("api/read/Car", _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
                 var companyId = new Guid(id);
                 cars = cars.Where(o => o.CompanyId == companyId).ToList();
             }
@@ -156,8 +159,8 @@ namespace CarNBusClient.Controllers
         // GET: Car/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
-            var car = await Utils.Get<Car>("api/read/Car/" + id);
-            var company = await Utils.Get<Company>("api/Company/" + car.CompanyId);
+            var car = await Utils.Get<Car>("api/read/Car/" + id, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
+            var company = await Utils.Get<Company>("api/Company/" + car.CompanyId, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
             ViewBag.CompanyName = company.Name;
             return View(car);
         }
@@ -170,7 +173,7 @@ namespace CarNBusClient.Controllers
             {
                 CompanyId = companyId,
             };
-            var company = await Utils.Get<Company>("api/Company/" + companyId);
+            var company = await Utils.Get<Company>("api/Company/" + companyId, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
             ViewBag.CompanyName = company.Name;
             return View(car);
         }
@@ -184,7 +187,7 @@ namespace CarNBusClient.Controllers
         {
             if (!ModelState.IsValid) return View(car);
             car.CarId = Guid.NewGuid();
-            await Utils.Post<Car>("api/write/Car/", car);
+            await Utils.Post<Car>("api/write/Car/", car, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
 
             return RedirectToAction("Index", new { id = car.CompanyId + ",pending create," + car.CarId + "," + car.RegNr + "," + car.VIN + "," + car.Online + "," + car.CreationTime + "," + car.Speed });
         }
@@ -192,14 +195,14 @@ namespace CarNBusClient.Controllers
         // GET: Car/Edit/5
         public async Task<IActionResult> Edit(Guid id)
         {
-            var car = await Utils.Get<Car>("api/read/Car/" + id);
+            var car = await Utils.Get<Car>("api/read/Car/" + id, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
             if (car.Locked)
             {
                 return RedirectToAction("Index", new { id = car.CompanyId + ",pending edit," + car.CarId + "," + car.RegNr + "," + car.VIN + "," + car.Online + "," + car.CreationTime + "," + car.Speed });
             }
             car.Locked = true; //Prevent updates of Online/Offline while editing
-            await Utils.Put<Car>("api/write/car/locked/" + id, car);
-            var company = await Utils.Get<Company>("api/Company/" + car.CompanyId);
+            await Utils.Put<Car>("api/write/car/locked/" + id, car, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
+            var company = await Utils.Get<Company>("api/Company/" + car.CompanyId, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
             ViewBag.CompanyName = company.Name;
             car.OldOnline = car.Online;
             car.OldSpeed = car.Speed;
@@ -214,30 +217,30 @@ namespace CarNBusClient.Controllers
         public async Task<IActionResult> Edit(Guid carid, [Bind("CarId, Online, Speed, OldOnline, OldSpeed")] Car car)
         {
             if (!ModelState.IsValid) return View(car);
-            var oldCar = await Utils.Get<Car>("api/read/Car/" + car.CarId);
+            var oldCar = await Utils.Get<Car>("api/read/Car/" + car.CarId, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
             if (!oldCar.Locked || oldCar.Speed != car.OldSpeed || oldCar.Online != car.OldOnline)
             {
                 return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending timeout," + oldCar.CarId + "," + oldCar.RegNr + "," + oldCar.VIN + "," + car.Online + "," + oldCar.CreationTime + "," + car.Speed });
             }
             oldCar.Online = car.Online;
-            await Utils.Put<Car>("api/write/Car/online/" + oldCar.CarId, oldCar);
+            await Utils.Put<Car>("api/write/Car/online/" + oldCar.CarId, oldCar, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
             oldCar.Speed = car.Speed;
-            await Utils.Put<Car>("api/write/Car/speed/" + oldCar.CarId, oldCar);
+            await Utils.Put<Car>("api/write/Car/speed/" + oldCar.CarId, oldCar, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
             oldCar.Locked = false; //Enable updates of Online/Offline when editing done
-            await Utils.Put<Car>("api/write/Car/locked/" + oldCar.CarId, oldCar);
+            await Utils.Put<Car>("api/write/Car/locked/" + oldCar.CarId, oldCar, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
             return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending update," + car.CarId + "," + car.RegNr + "," + car.VIN + "," + car.Online + "," + car.CreationTime + "," + car.Speed });
         }
 
         // GET: Car/Delete/5
         public async Task<IActionResult> Delete(Guid id)
         {
-            var car = await Utils.Get<Car>("api/read/Car/" + id);
+            var car = await Utils.Get<Car>("api/read/Car/" + id, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
             if (car.Locked)
             {
                 return RedirectToAction("Index", new { id = car.CompanyId + ",pending edit," + car.CarId + "," + car.RegNr + "," + car.VIN + "," + car.Online + "," + car.CreationTime + "," + car.Speed });
             }
             car.Locked = true; //Prevent updates of Online/Offline while editing
-            await Utils.Put<Car>("api/write/car/locked/" + id, car);
+            await Utils.Put<Car>("api/write/car/locked/" + id, car, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
             return View(car);
         }
 
@@ -247,24 +250,24 @@ namespace CarNBusClient.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var oldCar = await Utils.Get<Car>("api/read/Car/" + id);
+            var oldCar = await Utils.Get<Car>("api/read/Car/" + id, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
             if (!oldCar.Locked)
             {
                 return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending timeout," + oldCar.CarId + "," + oldCar.RegNr + "," + oldCar.VIN + "," + oldCar.Online + "," + oldCar.CreationTime + "," + oldCar.Speed });
             }
-            await Utils.Delete<Car>("api/write/Car/" + id);
+            await Utils.Delete<Car>("api/write/Car/" + id, _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
             return RedirectToAction("Index", new { id = oldCar.CompanyId + ",pending delete," + id });
         }
 
         public async Task<bool> RegNrAvailable(string regNr)
         {
-            var cars = await Utils.Get<List<Car>>("api/read/Car");
+            var cars = await Utils.Get<List<Car>>("api/read/Car", _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
             return cars.All(c => c.RegNr != regNr);
         }
 
         public async Task<bool> VinAvailable(string vin)
         {
-            var cars = await Utils.Get<List<Car>>("api/read/Car");
+            var cars = await Utils.Get<List<Car>>("api/read/Car", _httpContextAccessor.HttpContext.Session.GetString("ApiAddress"));
             return cars.All(c => c.VIN != vin);
         }
     }
