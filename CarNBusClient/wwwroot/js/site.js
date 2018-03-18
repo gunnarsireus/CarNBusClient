@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    if (document.getElementById('apiAddress').innerHTML !== null) {
+    if (document.getElementById('apiAddress') !== null) {
         if (localStorage.getItem("apiAddress") === null || (localStorage.getItem("apiAddress") !== document.getElementById('apiAddress').innerHTML)) {
             localStorage.setItem('apiAddress', document.getElementById('apiAddress').innerHTML);
         }
