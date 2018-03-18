@@ -42,20 +42,20 @@ namespace CarNBusClient
 		}
 		public async Task ConfigureServicesAsync(IServiceCollection services)
 		{
-			string aspNetDb = null;
+			string sqlServerConnectionString = null;
 			var aspNetDbLocation = new AspNetDbLocation();
 			try
 			{
-				aspNetDb = await aspNetDbLocation.GetAspNetDbAsync();
+				sqlServerConnectionString = await aspNetDbLocation.GetAspNetDbAsync();
 			}
 			catch (Exception e)
 			{
 				//Do nothing
 			}
-			if (aspNetDb != null)
+			if (sqlServerConnectionString != null)
 			{
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(aspNetDb));
+                    options.UseSqlServer(sqlServerConnectionString));
 
             }
 			else
