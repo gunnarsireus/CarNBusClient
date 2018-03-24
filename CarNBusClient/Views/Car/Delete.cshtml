@@ -8,7 +8,7 @@
 
 <h3>Do you really want to delete this car?</h3>
 <div>
-    <hr/>
+    <hr />
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.VIN)
@@ -37,8 +37,42 @@
     </dl>
     @{var listString = "Index/" + Model.CompanyId; }
     <form asp-action="Delete">
-        <input type="hidden" asp-for="CarId"/>
-        <input type="submit" value="Delete" class="btn btn-default"/> |
+        <input type="hidden" asp-for="CarId" />
+        <input id="deleteId" type="submit" value="Delete" class="btn btn-default" disabled /> |
         <a asp-action="@listString">Back to list</a>
     </form>
+    <script type="text/javascript">
+        (function () {
+            let loop = true;
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState === XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+                    if (xmlhttp.status === 200) {
+                        let car = JSON.parse(xmlhttp.responseText);
+                        if (car.locked === true) {
+                            let element = document.getElementById("deleteId");
+                            element.removeAttribute("disabled");
+                            loop = false;
+                        }
+                        else {
+                            let carId = document.getElementById("CarId").value;
+                            xmlhttp.open("GET", localStorage.getItem("apiAddress") + "/api/read/car/" + carId, true);
+                            xmlhttp.send();
+                        }
+                    }
+                    else if (xmlhttp.status === 400) {
+                        alert('There was an error 400');
+                    }
+                    else {
+                        //alert('something else other than 200 was returned: ' + xmlhttp.status);
+                    }
+                }
+            };
+            if (loop && localStorage.getItem("apiAddress") !== null) {
+                let carId = document.getElementById("CarId").value;
+                xmlhttp.open("GET", localStorage.getItem("apiAddress") + "/api/read/car/" + carId, true);
+                xmlhttp.send();
+            }
+        })();
+    </script>
 </div>
