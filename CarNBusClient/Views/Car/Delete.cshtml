@@ -35,15 +35,18 @@
             @Html.DisplayFor(model => model.CreationTime)
         </dd>
     </dl>
-    @{var listString = "Index/" + Model.CompanyId; }
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="CarId" />
-        <input id="deleteId" type="submit" value="Delete" class="btn btn-default" disabled /> |
-        <a asp-action="@listString">Back to list</a>
+
+    @{var listString = "/Car/Delete/" + Model.CarId; }
+    <form action=@listString method="post">
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a onclick="unlockCar()" style="cursor: pointer;">Back to list</a>
     </form>
     <script type="text/javascript">
+        function unlockCar() {
+            var id = '@Model.CompanyId';
+            window.location.href = '/Car/Index/' + id;
+        }
         (function () {
-            let loop = true;
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function () {
                 if (xmlhttp.readyState === XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
@@ -68,7 +71,7 @@
                     }
                 }
             };
-            if (loop && localStorage.getItem("apiAddress") !== null) {
+            if (localStorage.getItem("apiAddress") !== null) {
                 let carId = document.getElementById("CarId").value;
                 xmlhttp.open("GET", localStorage.getItem("apiAddress") + "/api/read/car/" + carId, true);
                 xmlhttp.send();
