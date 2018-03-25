@@ -57,7 +57,18 @@ function updateSpeedTimer() {
         xmlhttp.send();
     }
 }
-
+function updateOnline(car) {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("PUT", localStorage.getItem("apiAddress") + '/api/write/car/online/' + car.carId, true);
+    xmlhttp.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+    xmlhttp.send(JSON.stringify(car));
+}
+function updateSpeed(car) {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("PUT", localStorage.getItem("apiAddress") + '/api/write/car/speed/' + car.carId, true);
+    xmlhttp.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+    xmlhttp.send(JSON.stringify(car));
+}
 function updateOnlineOverdrive(cars) {
     if (localStorage.getItem("apiAddress") === null) {
         setTimeout(updateOnlineTimer, oneSecond);
@@ -79,13 +90,7 @@ function updateOnlineOverdrive(cars) {
         return;
     }
     selectedCar.online = !selectedCar.online;
-    $.ajax({
-        url: localStorage.getItem("apiAddress")  + '/api/write/car/online/' + selectedCar.carId,
-        contentType: "application/json",
-        type: "PUT",
-        data: JSON.stringify(selectedCar),
-        dataType: "json"
-    });
+    updateOnline(selectedCar)
     var onlineStr = (selectedCar.online) ? 'online' : 'offline';
     document.getElementById("infoText").innerHTML = 'Car ' + selectedCar.regNr + ' is ' + onlineStr;
     let interval = Math.round(overdriveInterval / numberOfCars);
@@ -114,13 +119,7 @@ function updateSpeedOverdrive(cars) {
     }
     const delta = selectedCar.speed / 10;
     selectedCar.speed = selectedCar.speed + Math.round(delta / 2 - Math.floor(Math.random() * delta));
-    $.ajax({
-        url: localStorage.getItem("apiAddress")  + '/api/write/car/speed/' + selectedCar.carId,
-        contentType: "application/json",
-        type: "PUT",
-        data: JSON.stringify(selectedCar),
-        dataType: "json"
-    });
+    updateSpeed(selectedCar);
     document.getElementById("infoText").innerHTML = 'Car ' + selectedCar.regNr + ' has speed ' + selectedCar.speed/10 + ' km/h';
     overdriveInterval2 = Math.round(overdriveInterval2 / numberOfCars);
     setTimeout(updateSpeedTimer, overdriveInterval2);

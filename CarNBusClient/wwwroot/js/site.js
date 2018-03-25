@@ -22,8 +22,8 @@ function clearErrors() {
     $(".validation-summary-errors").empty();
 };
 
-let longInterval = 100000;
-let longInterval2 = 100000;
+let longInterval = 50000;
+let longInterval2 = 50000;
 let numberOfCars = 7;
 const oneSecond = 1000;
 let windowStep = 0;
@@ -77,6 +77,18 @@ function timerJob2() {
         xmlhttp.send();
     }
 }
+function updateOnline(car) {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("PUT", localStorage.getItem("apiAddress") + '/api/write/car/online/' + car.carId, true);
+    xmlhttp.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+    xmlhttp.send(JSON.stringify(car));
+}
+function updateSpeed(car) {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("PUT", localStorage.getItem("apiAddress") + '/api/write/car/speed/' + car.carId, true);
+    xmlhttp.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+    xmlhttp.send(JSON.stringify(car));
+}
 
 function updateOnlineOverdrive(cars) {
     if (cars.length === 0) {
@@ -94,13 +106,7 @@ function updateOnlineOverdrive(cars) {
         return;
     }
     selectedCar.online = !selectedCar.online;
-    $.ajax({
-        url: localStorage.getItem("apiAddress") + '/api/write/car/online/' + selectedCar.carId,
-        contentType: "application/json",
-        type: "PUT",
-        data: JSON.stringify(selectedCar),
-        dataType: "json"
-    });
+    updateOnline(selectedCar);
 
     const onlineSelector = `#${selectedCar.carId} td:eq(3)`;
     const onlineSelector2 = `#${selectedCar.carId + "_2"} td:eq(4)`;
@@ -148,13 +154,7 @@ function updateSpeedOverdrive(cars) {
     }
     const delta = selectedCar.speed / 10;
     selectedCar.speed = selectedCar.speed + Math.round(delta / 2 - Math.floor(Math.random() * delta));
-    $.ajax({
-        url: localStorage.getItem("apiAddress") + '/api/write/car/speed/' + selectedCar.carId,
-        contentType: "application/json",
-        type: "PUT",
-        data: JSON.stringify(selectedCar),
-        dataType: "json"
-    });
+    updateSpeed(selectedCar);
 
     const speedSelector = `#${selectedCar.carId} td:eq(2)`;
     const speedSelector2 = `#${selectedCar.carId + "_2"} td:eq(2)`;
