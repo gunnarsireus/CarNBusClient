@@ -38,7 +38,7 @@
 
     @{var listString = "/Car/Delete/" + Model.CarId; }
     <form action=@listString method="post">
-        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <input type="submit" value="Delete" class="btn btn-default" id="deleteId" disabled/> |
         <a onclick="unlockCar()" style="cursor: pointer;">Back to list</a>
     </form>
     <script type="text/javascript">
@@ -55,10 +55,9 @@
                         if (car.locked === true) {
                             let element = document.getElementById("deleteId");
                             element.removeAttribute("disabled");
-                            loop = false;
                         }
                         else {
-                            let carId = document.getElementById("CarId").value;
+                            var carId = '@Model.CarId';
                             xmlhttp.open("GET", localStorage.getItem("apiAddress") + "/api/read/car/" + carId, true);
                             xmlhttp.send();
                         }
@@ -72,7 +71,7 @@
                 }
             };
             if (localStorage.getItem("apiAddress") !== null) {
-                let carId = document.getElementById("CarId").value;
+                var carId = '@Model.CarId';
                 xmlhttp.open("GET", localStorage.getItem("apiAddress") + "/api/read/car/" + carId, true);
                 xmlhttp.send();
             }
