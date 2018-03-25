@@ -36,15 +36,23 @@
         </dd>
     </dl>
 
-    @{var listString = "/Car/Delete/" + Model.CarId; }
-    <form action=@listString method="post">
-        <input type="submit" value="Delete" class="btn btn-default" id="deleteId" disabled/> |
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="CarId" />
+        <input type="submit" value="Delete" class="btn btn-default" id="deleteId" disabled /> |
         <a onclick="unlockCar()" style="cursor: pointer;">Back to list</a>
     </form>
     <script type="text/javascript">
         function unlockCar() {
-            var id = '@Model.CompanyId';
-            window.location.href = '/Car/Index/' + id;
+            var xmlhttp = new XMLHttpRequest();
+            var car = {};
+            car.carId = '@Model.CarId';
+            car.companyId = '@Model.CompanyId';
+            car.locked = false;
+            var json = JSON.stringify(car);
+            xmlhttp.open("PUT", localStorage.getItem("apiAddress") + "/api/write/car/locked/" + '@Model.CarId', true);
+            xmlhttp.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+            xmlhttp.send(json);
+            window.location.href = '/Car/Index/' + '@Model.CompanyId';
         }
         (function () {
             var xmlhttp = new XMLHttpRequest();
@@ -57,8 +65,7 @@
                             element.removeAttribute("disabled");
                         }
                         else {
-                            var carId = '@Model.CarId';
-                            xmlhttp.open("GET", localStorage.getItem("apiAddress") + "/api/read/car/" + carId, true);
+                            xmlhttp.open("GET", localStorage.getItem("apiAddress") + "/api/read/car/" + '@Model.CarId', true);
                             xmlhttp.send();
                         }
                     }
