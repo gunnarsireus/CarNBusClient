@@ -221,4 +221,29 @@ function clearDatabase() {
         xmlhttp.open("POST", localStorage.getItem("apiAddress") + "/api/aspnetdb/clear", true);
         xmlhttp.send();
     }
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function () {
+        if (xmlhttp.readyState === XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+            if (xmlhttp.status === 200) {
+                let cars = JSON.parse(xmlhttp.responseText);
+                if (cars.length === 7) {
+                    window.location.href = "/";
+                }
+                else {
+                    xmlhttp.open("GET", localStorage.getItem("apiAddress") + "/api/read/car", true);
+                    xmlhttp.send();
+                }
+            }
+            else if (xmlhttp.status === 400) {
+                alert('There was an error 400');
+            }
+            else {
+                //alert('something else other than 200 was returned: ' + xmlhttp.status);
+            }
+        }
+    };
+    if (localStorage.getItem("apiAddress") !== null) {
+        xmlhttp.open("GET", localStorage.getItem("apiAddress") + "/api/read/car", true);
+        xmlhttp.send();
+    }
 }
