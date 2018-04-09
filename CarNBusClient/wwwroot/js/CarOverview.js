@@ -34,7 +34,6 @@ function createTable(cars) {
         cell1.innerHTML = car.online;
         cell2.innerHTML = convertSpeed(car.speed);
         cell3.innerHTML = car.queuelength;
-        console.log('speed' + cars[i].speed)
     }
 }
 
