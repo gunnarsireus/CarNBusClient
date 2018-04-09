@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    console.log('Car.js loaded ');
+    console.log('CarOverview.js loaded ');
 });
 
 const oneSecond = 1000;
@@ -22,20 +22,19 @@ function createTable(cars) {
         let car = {
             regNr: cars[i].regNr,
             online: cars[i].online,
-            speed: cars[i].speed
+            speed: cars[i].speed,
+            queuelength: cars[i].queueLength
         };
-
         var row = table.insertRow(i + 1);
         var cell0 = row.insertCell(0);
         var cell1 = row.insertCell(1);
         var cell2 = row.insertCell(2);
         var cell3 = row.insertCell(3);
-        var cell4 = row.insertCell(4);
         cell0.innerHTML = car.regNr;
         cell1.innerHTML = car.online;
         cell2.innerHTML = convertSpeed(car.speed);
-        cell3.innerHTML = 0;
-        cell4.innerHTML = 0;
+        cell3.innerHTML = car.queuelength;
+        console.log('speed' + cars[i].speed)
     }
 }
 
@@ -59,7 +58,7 @@ function getCars() {
     };
 
     if (localStorage.getItem("apiAddress") !== null) {
-        xmlhttp.open("GET", localStorage.getItem("apiAddress")  + "/api/read/car", true);
+        xmlhttp.open("GET", localStorage.getItem("apiAddress")  + "/api/read/carandqueuelength", true);
         xmlhttp.send();
     }
 }

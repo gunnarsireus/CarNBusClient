@@ -207,7 +207,7 @@ function showModals() {
     let top = 50 + windowStep;
     let left = 50 + windowStep;
     windowStep = windowStep + 20;
-    window.open("./html/Car.html", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=" + top + ",left=" + left + ",width=500,height=400");
+    window.open("./html/CarOverview.html", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=" + top + ",left=" + left + ",width=500,height=400");
 }
 function show2ndView() {
     let top = 50 + windowStep;
