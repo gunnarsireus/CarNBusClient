@@ -12,7 +12,7 @@ function convertSpeed(s) {
 }
 
 function createTable(cars) {
-    var table = document.getElementById("myTable");
+    var table = document.getElementById("cssTable");
     var rowCount = table.rows.length;
     for (var x = rowCount - 1; x > 0; x--) {
         table.deleteRow(x);
