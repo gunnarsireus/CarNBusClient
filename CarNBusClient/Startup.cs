@@ -71,7 +71,7 @@ namespace CarNBusClient
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseSession();
-            var a = Configuration.GetSection("ConnectionStrings:ApiAddress").Get<string>();
+
             app.Use(async (context, next) =>
             {
                 context.Session.SetString("ApiAddress", Configuration.GetSection("ConnectionStrings:ApiAddress").Get<string>());
